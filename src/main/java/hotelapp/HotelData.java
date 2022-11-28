@@ -69,49 +69,25 @@ public class HotelData {
             return json;
         }
     }
-    public JsonObject findHotel(String word) {
-        JsonObject json = new JsonObject();
-        JsonArray jsonArr = new JsonArray();
+    public ArrayList<Hotel> findHotel(String word) {
+        ArrayList<Hotel> hotelArr = new ArrayList<>();
         if(word == null || word.isEmpty()) {
-            json.addProperty("success", true);
             for(Hotel h : hotelMap.values()) {
-                JsonObject jsonTemp = new JsonObject();
-                jsonTemp.addProperty("hotelId", h.getHotelID());
-                jsonTemp.addProperty("name", h.getHotelName());
-                jsonTemp.addProperty("addr", h.getHotelAddress());
-                jsonTemp.addProperty("city", h.getHotelCity());
-                jsonTemp.addProperty("state", h.getHotelState());
-                jsonTemp.addProperty("lat", h.getHotelLat());
-                jsonTemp.addProperty("lng", h.getHotelLng());
-                jsonArr.add(jsonTemp);
+                hotelArr.add(h);
             }
-            json.add("Hotels", jsonArr);
-            return json;
+            return hotelArr;
         } else {
             String wordLC = word.toLowerCase(Locale.ROOT);
-            json.addProperty("success", true);
             for(Hotel h : hotelMap.values()) {
                 String hName = h.getHotelName().toLowerCase();
                 if(hName.contains(wordLC)) {
-                    JsonObject jsonTemp = new JsonObject();
-                    jsonTemp.addProperty("hotelId", h.getHotelID());
-                    jsonTemp.addProperty("name", h.getHotelName());
-                    jsonTemp.addProperty("addr", h.getHotelAddress());
-                    jsonTemp.addProperty("city", h.getHotelCity());
-                    jsonTemp.addProperty("state", h.getHotelState());
-                    jsonTemp.addProperty("lat", h.getHotelLat());
-                    jsonTemp.addProperty("lng", h.getHotelLng());
-                    jsonArr.add(jsonTemp);
+                    hotelArr.add(h);
                 }
             }
-            if(jsonArr.size() > 0) {
-                json.add("Hotels", jsonArr);
-                return json;
+            if(hotelArr.size() > 0) {
+                return hotelArr;
             } else {
-                JsonObject jsonErr = new JsonObject();
-                jsonErr.addProperty("hotel", "Not Found");
-                jsonErr.addProperty("success", false);
-                return jsonErr;
+                return hotelArr;
             }
         }
     }

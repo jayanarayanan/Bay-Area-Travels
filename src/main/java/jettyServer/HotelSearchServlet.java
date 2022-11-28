@@ -34,7 +34,6 @@ public class HotelSearchServlet extends HttpServlet {
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/HotelSearchPage.html");
         context.put("Hotels", hotelData.findHotel(hotelName));
-        context.put("hotelObj", hotelData);
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{

@@ -2,6 +2,7 @@ package hotelapp;
 
 import com.google.gson.JsonObject;
 
+import java.util.ArrayList;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ThreadSafeHotelData extends HotelData {
@@ -34,7 +35,7 @@ public class ThreadSafeHotelData extends HotelData {
         }
     }
 
-    public JsonObject findHotel(String word) {
+    public ArrayList<Hotel> findHotel(String word) {
         try {
             lock.readLock().lock();
             return super.findHotel(word);

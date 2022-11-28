@@ -15,17 +15,11 @@
   <div class="row">
     <div class="col-sm-4">
       <h3> Hotels in San Francisco: </h3>
-      #foreach( $hotel in $Hotels.Hotels)
-        #set( $hid = "${hotelObj.getHotelObject($hotel.hotelId).getHotelId()}")
-      <a href="/hotelInfo?hotelId=$hid">$hotel.name\</a> <br>
+      #foreach( $hotel in $Hotels)
+      <a href="/hotelInfo?hotelId=$hotel.getHotelID()">$hotel.getHotelName()</a> <br>
       #end
     </div>
   </div>
 </div>
-<!--<script>-->
-<!--function submitReq(e) {-->
-<!--  location.href = "http://localhost:8090/hotelInfo?hotelId="+ e.target.id;-->
-<!--}-->
-<!--</script>-->
 </body>
 </html>
