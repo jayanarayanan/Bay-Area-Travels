@@ -2,12 +2,16 @@ package jettyServer;
 
 import hotelapp.ThreadSafeHotelData;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class HotelSearchServlet extends HttpServlet {
     private ThreadSafeHotelData hotelData;
@@ -26,8 +30,15 @@ public class HotelSearchServlet extends HttpServlet {
         // Get the word from the get request
         String hotelName = request.getParameter("hotelName");
         hotelName = StringEscapeUtils.escapeHtml4(hotelName);
+        VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
+        VelocityContext context = new VelocityContext();
+        Template template = ve.getTemplate("templates/HotelSearchPage.html");
+        context.put("Hotels", hotelData.findHotel(hotelName));
+        context.put("hotelObj", hotelData);
+        StringWriter writer = new StringWriter();
+        template.merge(context, writer);
         try{
-            out.println(hotelData.findHotel(hotelName));
+            out.println(writer.toString());
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }

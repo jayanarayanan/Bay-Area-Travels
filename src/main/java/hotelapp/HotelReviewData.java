@@ -87,6 +87,7 @@ public class HotelReviewData {
             json.addProperty("success", true);
             json.addProperty("hotelId", hotelID);
             json.addProperty("averageRating", avgRating(hotelID));
+//            json.addProperty("hotelDetails", )
             if(!reviewsMap.containsKey(hotelID) || hotelID == null || num == null) {
                 JsonObject jsonErr = new JsonObject();
                 jsonErr.addProperty("success", false);

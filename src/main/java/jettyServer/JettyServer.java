@@ -2,6 +2,7 @@ package jettyServer;
 
 import hotelapp.ThreadSafeHotelData;
 import hotelapp.ThreadSafeHotelReviewData;
+import org.apache.velocity.app.VelocityEngine;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHandler;
@@ -38,11 +39,15 @@ public class JettyServer {
     public  void start() throws Exception {
         Server server = new Server(PORT);
 
-        ServletHandler servhandler = new ServletHandler();
+//        ServletHandler servhandler = new ServletHandler();
+        ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         for(String r : handlers.keySet()) {
-            servhandler.addServletWithMapping(new ServletHolder(handlers.get(r)), r);
+            handler.addServlet(new ServletHolder(handlers.get(r)), r);
         }
-        server.setHandler(servhandler);
+        VelocityEngine velocity = new VelocityEngine();
+        velocity.init();
+        handler.setAttribute("templateEngine", velocity);
+        server.setHandler(handler);
         try {
             server.start();
             server.join();
