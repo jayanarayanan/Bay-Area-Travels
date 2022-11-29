@@ -129,11 +129,16 @@ public class HotelReviewData {
     public double avgRating(String hotelId) {
         double avgOverallRating = 0;
         int count = 0;
-        for(HotelReview r : reviewsMap.get(hotelId)) {
-            avgOverallRating += r.getRating();
-            count++;
+        if(reviewsMap.containsKey(hotelId)) {
+            for(HotelReview r : reviewsMap.get(hotelId)) {
+                avgOverallRating += r.getRating();
+                count++;
+            }
+            return avgOverallRating/count;
+        } else {
+            return 0;
         }
-        return avgOverallRating/count;
+
     }
 
     public JsonObject addToJson(HotelReview r) {

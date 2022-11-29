@@ -9,11 +9,21 @@
 </head>
 <body>
 <div class="jumbotron text-center">
-  <h1>Bay Area Travel </h1>
+  <h1>Bay Area Travel </h1><br>
+  <a href="/logout">
+    <button>Logout</button>
+  </a>
 </div>
 <div class="container">
   <div class="row">
-    <div class="col-sm-4">
+    <div class="col-sm-8">
+      <div class = "searchbar" >
+        <form action="/hotelSearch" method="GET">
+          <p>Enter the hotel name you want to search: </p>
+          <input type="text" name="hotelName" id="Hotel-Search"><br>
+          <input type="submit" value="Submit">
+        </form>
+      </div>
       <h3> Hotels in San Francisco: </h3>
       #foreach( $hotel in $Hotels)
       <a href="/reviews?hotelId=$hotel.getHotelID()">$hotel.getHotelName()</a> <br>

@@ -1,6 +1,7 @@
 package hotelapp;
 
 //import servers.httpServer.*;
+import database.DatabaseHandler;
 import jettyServer.*;
 
 import java.util.HashMap;
@@ -37,6 +38,8 @@ public class HotelSearch {
         ThreadSafeHotelData threadSafeHotel = new ThreadSafeHotelData();
         ThreadSafeHotelReviewData threadSafeHotelReview = new ThreadSafeHotelReviewData();
         HashMap<String, String> argsMap = new HashMap<>();
+        DatabaseHandler dhandler = DatabaseHandler.getInstance();
+        dhandler.createTable();
         threadSafeHotelReview.fillStopWordsMap("input/StopWords.txt");
         for(int i = 0; i < args.length; i++) {
             if(args[i].startsWith("-")) {
@@ -97,6 +100,9 @@ public class HotelSearch {
         server.addHandlers("/addReview", new AddReviewServlet(threadSafeHotelReview));
         server.addHandlers("/modifyReview", new ModifyReviewServlet(threadSafeHotelReview, threadSafeHotel));
         server.addHandlers("/deleteReview", new DeleteReviewServlet(threadSafeHotelReview, threadSafeHotel));
+        server.addHandlers("/login", new LoginServlet());
+        server.addHandlers("/register", new RegisterServlet());
+        server.addHandlers("/logout", new LogoutServlet());
         server.start();
     }
 

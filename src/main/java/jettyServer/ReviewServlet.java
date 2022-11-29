@@ -25,6 +25,8 @@ public class ReviewServlet extends HttpServlet {
 
     //this method gets executed when the get request is sent to /reviews, and creates the response packet that calls printHotelReview() to display the review details of "num" number of reviews in the browser.
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Helper helper = new Helper();
+        helper.notLoggedIn(request, response);
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
@@ -39,6 +41,7 @@ public class ReviewServlet extends HttpServlet {
         context.put("Elink", hotelData.getExpediaLink(hotelId));
         context.put("Reviews", reviewData.printHotelReview(hotelId));
         context.put("avgRating", reviewData.avgRating(hotelId));
+        context.put("user", helper.getUser(request));
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{

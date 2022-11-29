@@ -7,6 +7,8 @@ import java.security.MessageDigest;
 import java.sql.*;
 import java.util.Properties;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DatabaseHandler {
 
@@ -33,7 +35,6 @@ public class DatabaseHandler {
             return dbHandler;
         }
 
-
         // Load info from config file database.properties
         public Properties loadConfigFile(String propertyFile) {
             Properties config = new Properties();
@@ -52,7 +53,7 @@ public class DatabaseHandler {
             try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
                 System.out.println("dbConnection successful");
                 statement = dbConnection.createStatement();
-                statement.executeUpdate(PreparedStatements.CREATE_USER_TABLE);
+                statement.executeUpdate(jdbc.PreparedStatements.CREATE_USER_TABLE);
             }
             catch (SQLException ex) {
                 System.out.println(ex);
@@ -118,7 +119,7 @@ public class DatabaseHandler {
             try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
                 System.out.println("dbConnection successful");
                 try {
-                    statement = connection.prepareStatement(PreparedStatements.REGISTER_SQL);
+                    statement = connection.prepareStatement(jdbc.PreparedStatements.REGISTER_SQL);
                     statement.setString(1, newuser);
                     statement.setString(2, passhash);
                     statement.setString(3, usersalt);
@@ -134,11 +135,96 @@ public class DatabaseHandler {
             }
         }
 
+        public String validation(String username, String password) {
+            if(userExists(username)) {
+                return "user-exists";
+            }
+            if(password.length()>=8)
+            {
+                Pattern uppercase = Pattern.compile("[A-z]");
+                Pattern lowercase = Pattern.compile("[a-z]");
+                Pattern digit = Pattern.compile("[0-9]");
+                Pattern special = Pattern.compile ("[!@#$%&*()_+=|<>?{}\\[\\]~-]");
+
+                Matcher hasLC = lowercase.matcher(password);
+                Matcher hasUC = uppercase.matcher(password);
+                Matcher hasDigit = digit.matcher(password);
+                Matcher hasSpecial = special.matcher(password);
+
+                if(!hasLC.find()) {
+                    return "no-lc";
+                }
+                else if(!hasUC.find()) {
+                    return "no-uc";
+                }
+                else if(!hasDigit.find()) {
+                    return "no-digit";
+                }
+                else if(!hasSpecial.find()) {
+                    return "no-sp";
+                } else {
+                    return "err-free";
+                }
+            }
+            else
+                return "password-small";
+        }
+
+    public boolean userExists(String username) {
+        boolean exists = false;
+        try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            PreparedStatement ps = dbConnection.prepareStatement(jdbc.PreparedStatements.USER_SQL);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            exists = rs.next();
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return exists;
+    }
+
+    public boolean authenticateUser(String username, String password) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            //System.out.println("dbConnection successful");
+            statement = connection.prepareStatement(jdbc.PreparedStatements.AUTH_SQL);
+            String usersalt = getSalt(connection, username);
+            String passhash = getHash(password, usersalt);
+
+            statement.setString(1, username);
+            statement.setString(2, passhash);
+            ResultSet results = statement.executeQuery();
+            boolean flag = results.next();
+            return flag;
+        }
+        catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    private String getSalt(Connection connection, String user) {
+        String salt = null;
+        try (PreparedStatement statement = connection.prepareStatement(jdbc.PreparedStatements.SALT_SQL)) {
+            statement.setString(1, user);
+            ResultSet results = statement.executeQuery();
+            if (results.next()) {
+                salt = results.getString("usersalt");
+                return salt;
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e);
+        }
+        return salt;
+    }
+
         public static void main(String[] args) {
-            DatabaseHandler dhandler = DatabaseHandler.getInstance();
-            dhandler.createTable();
-            System.out.println("created a user table ");
-            dhandler.registerUser("luke", "lukeS1k23w");
-            System.out.println("Registered luke.");
+//            DatabaseHandler dhandler = DatabaseHandler.getInstance();
+//            dhandler.createTable();
+//            System.out.println("created a user table ");
+//            dhandler.registerUser("luke", "lukeS1k23w");
+//            System.out.println("Registered luke.");
         }
 }

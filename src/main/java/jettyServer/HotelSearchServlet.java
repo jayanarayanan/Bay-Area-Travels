@@ -23,6 +23,8 @@ public class HotelSearchServlet extends HttpServlet {
 
     //this method gets executed when the get request is sent to /hotelInfo, and creates the response packet that calls printHotel() to display the hotel details in the browser.
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Helper helper = new Helper();
+        helper.notLoggedIn(request, response);
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();

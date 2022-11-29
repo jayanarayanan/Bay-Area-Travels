@@ -9,16 +9,19 @@
 </head>
 <body>
 <div class="jumbotron text-center">
-    <h1>Bay Area Travel </h1>
+    <h1>Bay Area Travel </h1> <br>
+    <a href="/logout">
+        <button>Logout</button>
+    </a>
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-12">
             <h3> $Hotels.getHotelName() </h3>
             <p>ID: $Hotels.getHotelID()</p>
             <p>Address: $Hotels.getHotelAddress()</p>
             <p>Average Rating: $avgRating</p>
-            <p>Expedia Link: $Elink</p>
+            <p>Expedia Link: <a href="$Elink" target="_blank" rel="noopener noreferrer"> $Elink </a></p>
             <form action="/addReview" method="POST">
                 <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID" value="$Hotels.getHotelID()" readonly> <br>
                 <input type="text" name="review-title" id="review-title" placeholder="Review Title"> <br>
@@ -27,12 +30,14 @@
             </form>
             #foreach( $review in $Reviews)
                 <p>$review</p>
-            <a href="/modifyReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-                <button>Edit</button>
-            </a>
-            <a href="/deleteReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-                <button>Delete</button>
-            </a>
+                #if ($user == $review.getNickName())
+                <a href="/modifyReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                    <button>Edit</button>
+                </a>
+                <a href="/deleteReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                    <button>Delete</button>
+                </a>
+                #end
             #end
         </div>
     </div>

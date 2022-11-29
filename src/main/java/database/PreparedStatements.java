@@ -1,4 +1,4 @@
-package database;
+package jdbc;
 
 public class PreparedStatements {
     /** Prepared Statements  */
@@ -15,6 +15,10 @@ public class PreparedStatements {
             "INSERT INTO users (username, password, usersalt) " +
                     "VALUES (?, ?, ?);";
 
+    /** Used to check if a user with a given username exists. */
+    public static final String USER_SQL =
+            "SELECT username FROM users WHERE username = ?";
+
     /** Used to retrieve the salt associated with a specific user. */
     public static final String SALT_SQL =
             "SELECT usersalt FROM users WHERE username = ?";
@@ -23,5 +27,4 @@ public class PreparedStatements {
     public static final String AUTH_SQL =
             "SELECT username FROM users " +
                     "WHERE username = ? AND password = ?";
-
 }

@@ -28,6 +28,8 @@ public class ModifyReviewServlet extends HttpServlet {
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Helper helper = new Helper();
+        helper.notLoggedIn(request, response);
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();

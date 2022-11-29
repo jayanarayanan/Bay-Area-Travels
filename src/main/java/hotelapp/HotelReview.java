@@ -69,11 +69,11 @@ public class HotelReview implements Comparable<HotelReview> {
 
     //displays the contents of a HotelReview object
     public String toString() {
-        return  "--------------------" + System.lineSeparator() +
-                "Review by " + getNickName() + " on " + getPostDate() + System.lineSeparator() +
-                "Rating: " + overallRating + System.lineSeparator() +
-                "ReviewId: " + reviewID + System.lineSeparator() +
-                title + System.lineSeparator() + reviewText;
+        return "Review by " + getNickName() + " on " + getPostDate() + "<br>" +
+                "Rating: " + overallRating + "<br>" +
+                "ReviewId: " + reviewID + "<br>" +
+                "Title: " + title + "<br>" +
+                "Review Text: " + reviewText + "<br>";
     }
 
     //used by the Collections.sort() function to sort the ArrayList of type HotelReview by date.

@@ -22,6 +22,8 @@ public class AddReviewServlet extends HttpServlet {
 
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Helper helper = new Helper();
+        helper.notLoggedIn(request, response);
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         String uuid = UUID.randomUUID().toString();
@@ -29,7 +31,7 @@ public class AddReviewServlet extends HttpServlet {
         Date date = new Date();
         String curTime = dateFormat.format(date);
 
-        HotelReview review = new HotelReview(Integer.parseInt(request.getParameter("review-hotelId")), uuid, 0,  request.getParameter("review-title"), request.getParameter("review-text"), "Anon", curTime);
+        HotelReview review = new HotelReview(Integer.parseInt(request.getParameter("review-hotelId")), uuid, 0,  request.getParameter("review-title"), request.getParameter("review-text"), helper.getUser(request), curTime);
         reviewData.addReviewToMap(request.getParameter("review-hotelId"), review);
 
         response.sendRedirect("/reviews?hotelId=" + request.getParameter("review-hotelId"));
