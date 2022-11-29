@@ -23,7 +23,6 @@ public class AddReviewServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
-
         String uuid = UUID.randomUUID().toString();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date date = new Date();
