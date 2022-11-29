@@ -3,6 +3,7 @@ package hotelapp;
 import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class ThreadSafeHotelData extends HotelData {
@@ -34,6 +35,37 @@ public class ThreadSafeHotelData extends HotelData {
             lock.readLock().unlock();
         }
     }
+
+    @Override
+    public Hotel getHotelObject(String hotelID) {
+        try {
+            lock.readLock().lock();
+            return super.getHotelObject(hotelID);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public String getExpediaLink(String hotelID) {
+        try {
+            lock.readLock().lock();
+            return super.getExpediaLink(hotelID);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public Set<String> getHotelKeySet() {
+        try {
+            lock.readLock().lock();
+            return super.getHotelKeySet();
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
 
     public ArrayList<Hotel> findHotel(String word) {
         try {

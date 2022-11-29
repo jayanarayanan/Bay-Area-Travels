@@ -23,12 +23,42 @@ public class ThreadSafeHotelReviewData extends HotelReviewData {
             lock.writeLock().unlock();
         }
     }
+    @Override
+    public void addReviewToMap(String hotelId, HotelReview review) {
+        try {
+            lock.writeLock().lock();
+            super.addReviewToMap(hotelId, review);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
 
     @Override
     public void deleteReview(String hotelId, String reviewId) {
         try {
             lock.writeLock().lock();
             super.deleteReview(hotelId, reviewId);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
+    @Override
+    public HotelReview getReviewObj(String hotelId, String reviewId) {
+        try {
+            lock.readLock().lock();
+            return super.getReviewObj(hotelId, reviewId);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public void modifyReview(String hotelId, String reviewId, String reviewTitle, String reviewText) {
+        try {
+            lock.writeLock().lock();
+            super.modifyReview(hotelId, reviewId, reviewTitle, reviewText);
         } finally {
             lock.writeLock().unlock();
         }
@@ -73,6 +103,25 @@ public class ThreadSafeHotelReviewData extends HotelReviewData {
         try {
             lock.readLock().lock();
             super.writeHotelReviewToFile(hd, output);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    @Override
+    public double avgRating(String hotelId) {
+        try {
+            lock.readLock().lock();
+            return super.avgRating(hotelId);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+    public JsonObject addToJson(HotelReview r) {
+        try {
+            lock.readLock().lock();
+            return super.addToJson(r);
         } finally {
             lock.readLock().unlock();
         }
