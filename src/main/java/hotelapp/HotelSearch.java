@@ -91,9 +91,10 @@ public class HotelSearch {
         JettyServer server = new JettyServer(threadSafeHotel, threadSafeHotelReview);
         server.addHandlers("/hotelInfo", new HotelServlet(threadSafeHotel));
         server.addHandlers("/hotelSearch", new HotelSearchServlet(threadSafeHotel));
-        server.addHandlers("/reviews", new ReviewServlet(threadSafeHotelReview));
+        server.addHandlers("/reviews", new ReviewServlet(threadSafeHotelReview, threadSafeHotel));
         server.addHandlers("/index", new WordServlet(threadSafeHotelReview));
         server.addHandlers("/weather", new WeatherServlet(threadSafeHotel));
+        server.addHandlers("/addReview", new AddReviewServlet(threadSafeHotelReview));
         server.start();
     }
 
@@ -112,7 +113,7 @@ public class HotelSearch {
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter the Hotel ID: ");
                 String hotelIDString = scanner.nextLine();
-                threadSafeHotelReview.printHotelReview(hotelIDString, "3");
+                threadSafeHotelReview.printHotelReview(hotelIDString);
             } else if(choice.equals("c")) {
                 Scanner scanner = new Scanner(System.in);
                 System.out.println("Enter the keyword to search ");

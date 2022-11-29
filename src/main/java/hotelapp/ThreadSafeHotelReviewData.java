@@ -48,10 +48,10 @@ public class ThreadSafeHotelReviewData extends HotelReviewData {
 
     //thread-safe function for printHotelReview() utilizing the read lock.
     @Override
-    public JsonObject printHotelReview(String hotelID, String num) {
+    public ArrayList<HotelReview> printHotelReview(String hotelID) {
         try {
             lock.readLock().lock();
-            return super.printHotelReview(hotelID, num);
+            return super.printHotelReview(hotelID);
         } finally {
             lock.readLock().unlock();
         }

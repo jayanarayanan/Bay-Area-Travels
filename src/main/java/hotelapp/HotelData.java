@@ -34,6 +34,9 @@ public class HotelData {
     public Hotel getHotelObject(String hotelID) {
         return hotelMap.get(hotelID);
     }
+    public String getExpediaLink(String hotelID) {
+        return "https://www.expedia.com/h" + hotelMap.get(hotelID).getHotelID() + ".Hotel-Information";
+    }
 
     //getter function for the hotel map keyset, returns the hotelMap keyset.
     public Set<String> getHotelKeySet() {

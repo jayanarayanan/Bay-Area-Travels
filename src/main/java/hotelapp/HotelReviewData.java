@@ -25,6 +25,10 @@ public class HotelReviewData {
         fillWordMap(hotelReviews);
     }
 
+    public void addReviewToMap(String hotelId, HotelReview review) {
+        reviewsMap.get(hotelId).add(review);
+    }
+
 //    public void fillRatingsMap(String hotelId, Double avgRating) {
 //        ratingsMap.put(hotelId, avgRating);
 //    }
@@ -80,36 +84,18 @@ public class HotelReviewData {
     }
 
     //prints the hotel review details for a given hotel in the CLI
-    public JsonObject printHotelReview(String hotelID, String num) {
-            JsonObject json = new JsonObject();
-            JsonArray jsonArr = new JsonArray();
-            int tempNum = 0;
-            json.addProperty("success", true);
-            json.addProperty("hotelId", hotelID);
-            json.addProperty("averageRating", avgRating(hotelID));
-//            json.addProperty("hotelDetails", )
-            if(!reviewsMap.containsKey(hotelID) || hotelID == null || num == null) {
-                JsonObject jsonErr = new JsonObject();
-                jsonErr.addProperty("success", false);
-                jsonErr.addProperty("hotelId", "invalid");
-                return jsonErr;
+    public ArrayList<HotelReview> printHotelReview(String hotelID) {
+            ArrayList<HotelReview> hotelReviewArr = new ArrayList<>();
+            if(!reviewsMap.containsKey(hotelID) || hotelID == null) {
+                return hotelReviewArr;
             }
             else if(reviewsMap.containsKey(hotelID)) {
-                int numReviews = Integer.parseInt(num);
                 for(HotelReview r : reviewsMap.get(hotelID)) {
-                    if(tempNum < numReviews) {
-                        JsonObject jsonTemp = addToJson(r);
-                        jsonArr.add(jsonTemp);
-                        tempNum++;
-                    }
+                        hotelReviewArr.add(r);
                 }
-                json.add("reviews", jsonArr);
-                return json;
+                return hotelReviewArr;
             } else {
-                JsonObject jsonErr = new JsonObject();
-                jsonErr.addProperty("success", false);
-                jsonErr.addProperty("hotelId", "invalid");
-                return jsonErr;
+                return hotelReviewArr;
             }
     }
 

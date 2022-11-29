@@ -10,16 +10,24 @@
 <body>
 <div class="jumbotron text-center">
     <h1>Bay Area Travel </h1>
-<!--    #if($name != "anonymous")-->
-<!--    <h5>Hello, $name! </h5>-->
-<!--    #end-->
 </div>
 <div class="container">
     <div class="row">
         <div class="col-sm-4">
-            <h3> Hotels in San Francisco: </h3>
-            <p>$Hotels</p>
-
+            <h3> $Hotels.getHotelName() </h3>
+            <p>ID: $Hotels.getHotelID()</p>
+            <p>Address: $Hotels.getHotelAddress()</p>
+            <p>Average Rating: $avgRating</p>
+            <p>Expedia Link: $Elink</p>
+            <form action="/addReview" method="POST">
+                <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID"> <br>
+                <input type="text" name="review-title" id="review-title" placeholder="Review Title"> <br>
+                <textarea name="review-text" id="review-text" placeholder="Review Text" rows="4" cols="50"></textarea><br>
+                <input type="submit" value="Submit"><br>
+            </form>
+            #foreach( $review in $Reviews)
+                <p>$review</p>
+            #end
         </div>
     </div>
 </div>

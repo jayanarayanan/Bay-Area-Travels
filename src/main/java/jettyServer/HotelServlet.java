@@ -37,7 +37,7 @@ public class HotelServlet extends HttpServlet {
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{
-            out.println(writer.toString());
+            out.println(writer);
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
