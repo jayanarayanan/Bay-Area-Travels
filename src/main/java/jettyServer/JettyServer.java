@@ -39,7 +39,6 @@ public class JettyServer {
     public  void start() throws Exception {
         Server server = new Server(PORT);
 
-//        ServletHandler servhandler = new ServletHandler();
         ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         for(String r : handlers.keySet()) {
             handler.addServlet(new ServletHolder(handlers.get(r)), r);
