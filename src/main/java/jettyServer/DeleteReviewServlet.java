@@ -1,6 +1,5 @@
 package jettyServer;
 
-import hotelapp.HotelReview;
 import hotelapp.ThreadSafeHotelData;
 import hotelapp.ThreadSafeHotelReviewData;
 import org.apache.commons.text.StringEscapeUtils;
@@ -13,16 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
 
-public class ModifyReviewServlet extends HttpServlet {
+public class DeleteReviewServlet  extends HttpServlet {
     private ThreadSafeHotelReviewData reviewData;
     private ThreadSafeHotelData hotelData;
-    public ModifyReviewServlet(hotelapp.ThreadSafeHotelReviewData reviewData, ThreadSafeHotelData hotelData) {
+    public DeleteReviewServlet(hotelapp.ThreadSafeHotelReviewData reviewData, ThreadSafeHotelData hotelData) {
         this.hotelData = hotelData;
         this.reviewData = reviewData;
     }
@@ -39,22 +33,7 @@ public class ModifyReviewServlet extends HttpServlet {
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/ModifyReview.html");
-        context.put("review", reviewData.getReviewObj(hotelId, reviewId));
-        context.put("hotel", hotelData.getHotelObject(hotelId));
-        StringWriter writer = new StringWriter();
-        template.merge(context, writer);
-        try{
-            out.println(writer);
-        } catch(Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setContentType("text/html");
-        response.setStatus(HttpServletResponse.SC_OK);
-        reviewData.modifyReview(request.getParameter("review-hotelId"), request.getParameter("review-reviewId"), request.getParameter("review-title"), request.getParameter("review-text"));
-
-        response.sendRedirect("/reviews?hotelId=" + request.getParameter("review-hotelId"));
+        reviewData.deleteReview(hotelId, reviewId);
+        response.sendRedirect("/reviews?hotelId=" + hotelId);
     }
 }

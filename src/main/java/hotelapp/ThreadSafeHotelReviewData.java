@@ -24,6 +24,16 @@ public class ThreadSafeHotelReviewData extends HotelReviewData {
         }
     }
 
+    @Override
+    public void deleteReview(String hotelId, String reviewId) {
+        try {
+            lock.writeLock().lock();
+            super.deleteReview(hotelId, reviewId);
+        } finally {
+            lock.writeLock().unlock();
+        }
+    }
+
     //thread-safe function for fillWordMap() utilizing the write lock.
     @Override
     public void fillWordMap(ArrayList<HotelReview> hotelReviews) {

@@ -60,6 +60,12 @@ public class HotelReview implements Comparable<HotelReview> {
     public int getRating() {
         return this.overallRating;
     }
+    public void modifyReviewTitle(String reviewTitle) {
+        this.title = reviewTitle;
+    }
+    public void modifyReviewText(String reviewText) {
+        this.reviewText = reviewText;
+    }
 
     //displays the contents of a HotelReview object
     public String toString() {

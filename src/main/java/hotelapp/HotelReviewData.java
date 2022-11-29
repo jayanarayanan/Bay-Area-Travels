@@ -13,7 +13,6 @@ public class HotelReviewData {
     private HashMap<String, ArrayList<HotelReview>> reviewsMap = new HashMap<>();
     private static HashMap<String, TreeMap<Integer, ArrayList<HotelReview>>> wordMap = new HashMap<>();
     private static HashSet<String> stopWords = new HashSet<>();
-//    private static HashMap<String, Double> ratingsMap = new HashMap<>();
 
 
     //Called by the run function, adds the arraylist of hotelreview objects read from the json file into the hashmap.
@@ -29,9 +28,37 @@ public class HotelReviewData {
         reviewsMap.get(hotelId).add(review);
     }
 
-//    public void fillRatingsMap(String hotelId, Double avgRating) {
-//        ratingsMap.put(hotelId, avgRating);
-//    }
+    public HotelReview getReviewObj(String hotelId, String reviewId) {
+        // containsKey reviewsMap.containsKey(hotelId)
+        for(HotelReview r : reviewsMap.get(hotelId)) {
+            if(r.getReviewID().equals(reviewId)) {
+                return r;
+            }
+        }
+        return null;
+    }
+    public void modifyReview(String hotelId, String reviewId, String reviewTitle, String reviewText) {
+        for(HotelReview r : reviewsMap.get(hotelId)) {
+            if(r.getReviewID().equals(reviewId)) {
+                r.modifyReviewTitle(reviewTitle);
+                r.modifyReviewText(reviewText);
+            }
+        }
+    }
+    public void deleteReview(String hotelId, String reviewId) {
+        HotelReview rev = null;
+        if(reviewsMap.get(hotelId) != null) {
+            for(HotelReview r : reviewsMap.get(hotelId)) {
+                if(r != null && r.getReviewID().equals(reviewId)) {
+                    rev = r;
+                }
+            }
+            if(rev != null) {
+                reviewsMap.get(hotelId).remove(rev);
+            }
+        }
+
+    }
 
     //Called during the start of the program, adds stop words to the stopWords map.
     public void fillStopWordsMap(String stopWordsFilePath) {

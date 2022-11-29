@@ -95,6 +95,8 @@ public class HotelSearch {
         server.addHandlers("/index", new WordServlet(threadSafeHotelReview));
         server.addHandlers("/weather", new WeatherServlet(threadSafeHotel));
         server.addHandlers("/addReview", new AddReviewServlet(threadSafeHotelReview));
+        server.addHandlers("/modifyReview", new ModifyReviewServlet(threadSafeHotelReview, threadSafeHotel));
+        server.addHandlers("/deleteReview", new DeleteReviewServlet(threadSafeHotelReview, threadSafeHotel));
         server.start();
     }
 

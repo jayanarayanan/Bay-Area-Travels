@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Modify your Review</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="jumbotron text-center">
+  <h1>Bay Area Travel </h1>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-4">
+      <h3> $hotel.getHotelName() </h3>
+      <p>ID: $hotel.getHotelID()</p>
+      <form action="/modifyReview" method="POST">
+        <input type="text" name="review-hotelId" id="review-hotelId" value="$hotel.getHotelID()" readonly> <br>
+        <input type="text" name="review-reviewId" id="review-reviewId" value="$review.getReviewID()" readonly> <br>
+        <input type="text" name="review-title" id="review-title" value="$review.getReviewTitle()"> <br>
+        <textarea name="review-text" id="review-text" rows="8" cols="50">$review.getReviewText()</textarea><br>
+        <input type="submit" value="Submit"><br>
+      </form>
+    </div>
+  </div>
+</div>
+</body>
+</html>

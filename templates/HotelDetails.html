@@ -20,16 +20,19 @@
             <p>Average Rating: $avgRating</p>
             <p>Expedia Link: $Elink</p>
             <form action="/addReview" method="POST">
-                <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID" value="$Hotels.getHotelID()"> <br>
+                <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID" value="$Hotels.getHotelID()" readonly> <br>
                 <input type="text" name="review-title" id="review-title" placeholder="Review Title"> <br>
                 <textarea name="review-text" id="review-text" placeholder="Review Text" rows="4" cols="50"></textarea><br>
                 <input type="submit" value="Submit"><br>
             </form>
             #foreach( $review in $Reviews)
                 <p>$review</p>
-                <form action="/modifyReview?reviewId=$review.getReviewID()" method="GET">
-                    <input type="submit" value="Edit Review" />
-                </form>
+            <a href="/modifyReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                <button>Edit</button>
+            </a>
+            <a href="/deleteReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                <button>Delete</button>
+            </a>
             #end
         </div>
     </div>
