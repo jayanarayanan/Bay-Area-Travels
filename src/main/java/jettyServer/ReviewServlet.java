@@ -1,5 +1,6 @@
 package jettyServer;
 
+import database.DatabaseHandler;
 import hotelapp.ThreadSafeHotelData;
 import hotelapp.ThreadSafeHotelReviewData;
 import org.apache.commons.text.StringEscapeUtils;
@@ -30,6 +31,7 @@ public class ReviewServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
 
         // Get the word from the get request
         String hotelId = request.getParameter("hotelId");
@@ -37,9 +39,9 @@ public class ReviewServlet extends HttpServlet {
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/HotelDetails.html");
-        context.put("Hotels", hotelData.getHotelObject(hotelId));
+        context.put("Hotels", dbHandler.getHotelFromDB(hotelId));
         context.put("Elink", hotelData.getExpediaLink(hotelId));
-        context.put("Reviews", reviewData.printHotelReview(hotelId));
+        context.put("Reviews", dbHandler.getReviewsFromDB(hotelId));
         context.put("avgRating", reviewData.avgRating(hotelId));
         context.put("user", helper.getUser(request));
         StringWriter writer = new StringWriter();

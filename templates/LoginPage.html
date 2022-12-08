@@ -11,7 +11,7 @@
 <div class="jumbotron text-center">
     <h1>Bay Area Travel </h1>
 </div>
-    #if ($error.isNull())
+    #if ( $error)
     <h4>$error</h4>
     #end
     <form method="POST" action="/login">
@@ -19,5 +19,6 @@
         Enter your password:<br><input type="password" name="password"><br>
         <p><input type="submit" value="Login"></p>
     </form>
+    Don't have an account? <a href="/register"><p>Register here!</p></a>
 </body>
 </html>

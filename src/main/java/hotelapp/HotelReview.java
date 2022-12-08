@@ -12,7 +12,7 @@ public class HotelReview implements Comparable<HotelReview> {
     @SerializedName(value = "reviewId")
     private String reviewID;
     @SerializedName(value = "ratingOverall")
-    private int overallRating;
+    private float overallRating;
     private String title;
     private String reviewText;
     private String userNickname;
@@ -20,8 +20,8 @@ public class HotelReview implements Comparable<HotelReview> {
     private String postDate;
 
     //constructor for HotelReview.
-    public HotelReview(int hotelID, String reviewID, int overallRating, String title, String reviewText, String userNickname, String stringDate) {
-        this.hotelID = String.valueOf(hotelID);
+    public HotelReview(String hotelID, String reviewID, float overallRating, String title, String reviewText, String userNickname, String stringDate) {
+        this.hotelID = hotelID;
         this.reviewID = reviewID;
         this.overallRating = overallRating;
         this.title = title;
@@ -57,7 +57,7 @@ public class HotelReview implements Comparable<HotelReview> {
     public String getReviewDate() {
         return this.postDate;
     }
-    public int getRating() {
+    public float getRating() {
         return this.overallRating;
     }
     public void modifyReviewTitle(String reviewTitle) {

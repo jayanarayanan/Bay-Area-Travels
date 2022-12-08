@@ -1,5 +1,6 @@
 package jettyServer;
 
+import database.DatabaseHandler;
 import hotelapp.ThreadSafeHotelData;
 import org.apache.commons.text.StringEscapeUtils;
 import org.apache.velocity.Template;
@@ -28,6 +29,7 @@ public class HotelSearchServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
 
         // Get the word from the get request
         String hotelName = request.getParameter("hotelName");
@@ -35,7 +37,7 @@ public class HotelSearchServlet extends HttpServlet {
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/HotelSearchPage.html");
-        context.put("Hotels", hotelData.findHotel(hotelName));
+        context.put("Hotels", dbHandler.searchHotelsInDB(hotelName));
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{

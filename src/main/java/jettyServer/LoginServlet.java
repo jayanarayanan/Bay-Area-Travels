@@ -26,7 +26,6 @@ public class LoginServlet extends HttpServlet {
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/LoginPage.html");
         if(user == null) {
-            context.put("error", "User not logged in.");
             StringWriter writer = new StringWriter();
             template.merge(context, writer);
             try{
@@ -60,7 +59,7 @@ public class LoginServlet extends HttpServlet {
             PrintWriter out = response.getWriter();
             VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
             VelocityContext context = new VelocityContext();
-            Template template = ve.getTemplate("templates/RegisterPage.html");
+            Template template = ve.getTemplate("templates/LoginPage.html");
             context.put("error", "Incorrect login details!");
             StringWriter writer = new StringWriter();
             template.merge(context, writer);

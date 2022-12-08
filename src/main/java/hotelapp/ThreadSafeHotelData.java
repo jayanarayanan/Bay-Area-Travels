@@ -66,15 +66,35 @@ public class ThreadSafeHotelData extends HotelData {
         }
     }
 
-
-    public ArrayList<Hotel> findHotel(String word) {
+    @Override
+    public double getLatString(String hotelID) {
         try {
             lock.readLock().lock();
-            return super.findHotel(word);
+            return super.getLatString(hotelID);
         } finally {
             lock.readLock().unlock();
         }
     }
+
+    @Override
+    public double getLngString(String hotelID) {
+        try {
+            lock.readLock().lock();
+            return super.getLngString(hotelID);
+        } finally {
+            lock.readLock().unlock();
+        }
+    }
+
+
+//    public ArrayList<Hotel> findHotel(String word) {
+//        try {
+//            lock.readLock().lock();
+//            return super.findHotel(word);
+//        } finally {
+//            lock.readLock().unlock();
+//        }
+//    }
 
     //thread-safe function for writeHotelToFile() utilizing the read lock.
     @Override

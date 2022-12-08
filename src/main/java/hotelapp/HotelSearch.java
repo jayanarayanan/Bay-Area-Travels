@@ -38,8 +38,8 @@ public class HotelSearch {
         ThreadSafeHotelData threadSafeHotel = new ThreadSafeHotelData();
         ThreadSafeHotelReviewData threadSafeHotelReview = new ThreadSafeHotelReviewData();
         HashMap<String, String> argsMap = new HashMap<>();
-        DatabaseHandler dhandler = DatabaseHandler.getInstance();
-        dhandler.createTable();
+//        DatabaseHandler dhandler = DatabaseHandler.getInstance();
+//        dhandler.createTable();
         threadSafeHotelReview.fillStopWordsMap("input/StopWords.txt");
         for(int i = 0; i < args.length; i++) {
             if(args[i].startsWith("-")) {
@@ -57,7 +57,23 @@ public class HotelSearch {
             builder.finishWork();
         }
 
-//        if(argsMap.containsKey("-output")) {
+        //JettyServer Connection
+        JettyServer server = new JettyServer(threadSafeHotel, threadSafeHotelReview);
+        server.addHandlers("/hotelInfo", new HotelServlet(threadSafeHotel));
+        server.addHandlers("/hotelSearch", new HotelSearchServlet(threadSafeHotel));
+        server.addHandlers("/reviews", new ReviewServlet(threadSafeHotelReview, threadSafeHotel));
+        server.addHandlers("/index", new WordServlet(threadSafeHotelReview));
+        server.addHandlers("/weather", new WeatherServlet(threadSafeHotel));
+        server.addHandlers("/addReview", new AddReviewServlet(threadSafeHotelReview));
+        server.addHandlers("/modifyReview", new ModifyReviewServlet(threadSafeHotelReview, threadSafeHotel));
+        server.addHandlers("/deleteReview", new DeleteReviewServlet(threadSafeHotelReview, threadSafeHotel));
+        server.addHandlers("/login", new LoginServlet());
+        server.addHandlers("/register", new RegisterServlet());
+        server.addHandlers("/logout", new LogoutServlet());
+        server.start();
+
+
+        //        if(argsMap.containsKey("-output")) {
 //            if(argsMap.containsKey("-reviews")) {
 //                threadSafeHotelReview.writeHotelReviewToFile(threadSafeHotel, argsMap.get("-output"));
 //            } else {
@@ -87,55 +103,38 @@ public class HotelSearch {
 //        } else {
 //            serv.startServer(5);
 //        }
-
-
-
-        //JettyServer Connection
-        JettyServer server = new JettyServer(threadSafeHotel, threadSafeHotelReview);
-        server.addHandlers("/hotelInfo", new HotelServlet(threadSafeHotel));
-        server.addHandlers("/hotelSearch", new HotelSearchServlet(threadSafeHotel));
-        server.addHandlers("/reviews", new ReviewServlet(threadSafeHotelReview, threadSafeHotel));
-        server.addHandlers("/index", new WordServlet(threadSafeHotelReview));
-        server.addHandlers("/weather", new WeatherServlet(threadSafeHotel));
-        server.addHandlers("/addReview", new AddReviewServlet(threadSafeHotelReview));
-        server.addHandlers("/modifyReview", new ModifyReviewServlet(threadSafeHotelReview, threadSafeHotel));
-        server.addHandlers("/deleteReview", new DeleteReviewServlet(threadSafeHotelReview, threadSafeHotel));
-        server.addHandlers("/login", new LoginServlet());
-        server.addHandlers("/register", new RegisterServlet());
-        server.addHandlers("/logout", new LogoutServlet());
-        server.start();
     }
 
     //main menu function that displays the menu in the CLI and asks for the user's input.
-    public static void mainMenu(HashMap<String, String> argsMap, ThreadSafeHotelData threadSafeHotel, ThreadSafeHotelReviewData threadSafeHotelReview) {
-        Scanner myObj = new Scanner(System.in);
-        System.out.println("Choose the operation you want to perform :\na. Search for a hotel using the Hotel ID, and display the details of that Hotel\nb. Display all the reviews for a given Hotel using the Hotel ID\nc. Display all the comments that contain the specified keyword\nq. Quit\nEnter your choice(a/b/c/q): " );
-        String choice = myObj.nextLine();
-        while(!choice.equals("q")) {
-            if(choice.equals("a")) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter the Hotel ID: ");
-                String hotelIDString = scanner.nextLine();
-                threadSafeHotel.printHotel(hotelIDString);
-            } else if(choice.equals("b")) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter the Hotel ID: ");
-                String hotelIDString = scanner.nextLine();
-                threadSafeHotelReview.printHotelReview(hotelIDString);
-            } else if(choice.equals("c")) {
-                Scanner scanner = new Scanner(System.in);
-                System.out.println("Enter the keyword to search ");
-                String searchWord = scanner.nextLine();
-                threadSafeHotelReview.findWordInHotelReview(searchWord, "3");
-            } else if(choice.equals("q")) {
-                break;
-            } else {
-                System.out.println("The input provided is wrong, please re-enter the input.");
-            }
-            System.out.println("Choose the operation you want to perform :\na. Search for a hotel using the Hotel ID, and display the details of that Hotel\nb. Display all the reviews for a given Hotel using the Hotel ID\nc. Display all the comments that contain the specified keyword\nq. Quit\nEnter your choice(a/b/c/q): " );
-            choice = myObj.nextLine();
-        }
-    }
+//    public static void mainMenu(HashMap<String, String> argsMap, ThreadSafeHotelData threadSafeHotel, ThreadSafeHotelReviewData threadSafeHotelReview) {
+//        Scanner myObj = new Scanner(System.in);
+//        System.out.println("Choose the operation you want to perform :\na. Search for a hotel using the Hotel ID, and display the details of that Hotel\nb. Display all the reviews for a given Hotel using the Hotel ID\nc. Display all the comments that contain the specified keyword\nq. Quit\nEnter your choice(a/b/c/q): " );
+//        String choice = myObj.nextLine();
+//        while(!choice.equals("q")) {
+//            if(choice.equals("a")) {
+//                Scanner scanner = new Scanner(System.in);
+//                System.out.println("Enter the Hotel ID: ");
+//                String hotelIDString = scanner.nextLine();
+//                threadSafeHotel.printHotel(hotelIDString);
+//            } else if(choice.equals("b")) {
+//                Scanner scanner = new Scanner(System.in);
+//                System.out.println("Enter the Hotel ID: ");
+//                String hotelIDString = scanner.nextLine();
+//                threadSafeHotelReview.printHotelReview(hotelIDString);
+//            } else if(choice.equals("c")) {
+//                Scanner scanner = new Scanner(System.in);
+//                System.out.println("Enter the keyword to search ");
+//                String searchWord = scanner.nextLine();
+//                threadSafeHotelReview.findWordInHotelReview(searchWord, "3");
+//            } else if(choice.equals("q")) {
+//                break;
+//            } else {
+//                System.out.println("The input provided is wrong, please re-enter the input.");
+//            }
+//            System.out.println("Choose the operation you want to perform :\na. Search for a hotel using the Hotel ID, and display the details of that Hotel\nb. Display all the reviews for a given Hotel using the Hotel ID\nc. Display all the comments that contain the specified keyword\nq. Quit\nEnter your choice(a/b/c/q): " );
+//            choice = myObj.nextLine();
+//        }
+//    }
 
 }
 

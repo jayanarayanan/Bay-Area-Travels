@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
+import database.DatabaseHandler;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,9 +25,11 @@ public class HotelData {
 
     //Adds the list of hotels to the hotelMap hashmap
     public void addHotels(String hotelPath) {
+//        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
         ArrayList<Hotel> hotels = HotelParser.readHotel(hotelPath);
         for (Hotel h : hotels) {
             hotelMap.put(h.getHotelID(), h);
+//            dbHandler.addHotelsToDB(h.getHotelID(), h.getHotelName(), h.getHotelAddress(), h.getHotelCity(), h.getHotelState(), h.getHotelLat(), h.getHotelLng());
         }
     }
 
@@ -43,10 +46,10 @@ public class HotelData {
         return hotelMap.keySet();
     }
 
-    public String getLatString(String hotelID) {
+    public double getLatString(String hotelID) {
         return hotelMap.get(hotelID).getHotelLat();
     }
-    public String getLngString(String hotelID) {
+    public double getLngString(String hotelID) {
         return hotelMap.get(hotelID).getHotelLng();
     }
 
@@ -72,28 +75,27 @@ public class HotelData {
             return json;
         }
     }
-    public ArrayList<Hotel> findHotel(String word) {
-        ArrayList<Hotel> hotelArr = new ArrayList<>();
-        if(word == null || word.isEmpty()) {
-            for(Hotel h : hotelMap.values()) {
-                hotelArr.add(h);
-            }
-            return hotelArr;
-        } else {
-            String wordLC = word.toLowerCase(Locale.ROOT);
-            for(Hotel h : hotelMap.values()) {
-                String hName = h.getHotelName().toLowerCase();
-                if(hName.contains(wordLC)) {
-                    hotelArr.add(h);
-                }
-            }
-            if(hotelArr.size() > 0) {
-                return hotelArr;
-            } else {
-                return hotelArr;
-            }
-        }
-    }
+//    public ArrayList<Hotel> findHotel(String word) {
+//        ArrayList<Hotel> hotelArr = new ArrayList<>();
+//        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+//        ArrayList<Hotel> hotels = dbHandler.searchHotelsInDB(word);
+//        if(word == null || word.isEmpty()) {
+//            return hotels;
+//        } else {
+//            String wordLC = word.toLowerCase(Locale.ROOT);
+//            for(Hotel h : hotels) {
+//                String hName = h.getHotelName().toLowerCase();
+//                if(hName.contains(wordLC)) {
+//                    hotelArr.add(h);
+//                }
+//            }
+//            if(hotelArr.size() > 0) {
+//                return hotelArr;
+//            } else {
+//                return hotels;
+//            }
+//        }
+//    }
 
     //Writes the hotel details of a given hotelID into the specified output file.
     public void writeHotelToFile(String output) {

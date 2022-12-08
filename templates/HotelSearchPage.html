@@ -24,7 +24,7 @@
           <input type="submit" value="Submit">
         </form>
       </div>
-      <h3> Hotels in San Francisco: </h3>
+      <h3> Hotels in Bay Area: </h3>
       #foreach( $hotel in $Hotels)
       <a href="/reviews?hotelId=$hotel.getHotelID()">$hotel.getHotelName()</a> <br>
       #end

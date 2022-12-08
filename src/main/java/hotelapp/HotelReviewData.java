@@ -2,6 +2,7 @@ package hotelapp;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import database.DatabaseHandler;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -18,8 +19,12 @@ public class HotelReviewData {
     //Called by the run function, adds the arraylist of hotelreview objects read from the json file into the hashmap.
     public void fillReviewsMap(ArrayList<HotelReview> hotelReviews) {
         Collections.sort(hotelReviews);
+//        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
         if(!hotelReviews.isEmpty()) {
             reviewsMap.put(hotelReviews.get(0).getHotelID(), hotelReviews);
+//            for(HotelReview r : hotelReviews) {
+//                dbHandler.addReviewsToDB(r.getReviewID(), r.getHotelID(), r.getReviewTitle(), r.getReviewText(), r.getNickName(), r.getRating(), r.getReviewDate());
+//            }
         }
         fillWordMap(hotelReviews);
     }

@@ -1,10 +1,16 @@
 package database;
 
+import database.PreparedStatements;
+import hotelapp.Hotel;
+import hotelapp.HotelReview;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Properties;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -53,12 +59,39 @@ public class DatabaseHandler {
             try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
                 System.out.println("dbConnection successful");
                 statement = dbConnection.createStatement();
-                statement.executeUpdate(jdbc.PreparedStatements.CREATE_USER_TABLE);
+//                statement.executeUpdate(PreparedStatements.CREATE_USER_TABLE);
+//                statement.executeUpdate(PreparedStatements.CREATE_HOTEL_TABLE);
+//                statement.executeUpdate(PreparedStatements.CREATE_REVIEW_TABLE);
+                statement.executeUpdate(PreparedStatements.CREATE_LIKES_TABLE);
             }
             catch (SQLException ex) {
                 System.out.println(ex);
             }
         }
+
+//    public void createHotelTable() {
+//        Statement statement;
+//        try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+//            System.out.println("dbConnection successful");
+//            statement = dbConnection.createStatement();
+//            statement.executeUpdate(PreparedStatements.CREATE_HOTEL_TABLE);
+//        }
+//        catch (SQLException ex) {
+//            System.out.println(ex);
+//        }
+//    }
+//
+//    public void createReviewTable() {
+//        Statement statement;
+//        try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+//            System.out.println("dbConnection successful");
+//            statement = dbConnection.createStatement();
+//            statement.executeUpdate(PreparedStatements.CREATE_REVIEW_TABLE);
+//        }
+//        catch (SQLException ex) {
+//            System.out.println(ex);
+//        }
+//    }
 
 
         /**
@@ -119,7 +152,7 @@ public class DatabaseHandler {
             try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
                 System.out.println("dbConnection successful");
                 try {
-                    statement = connection.prepareStatement(jdbc.PreparedStatements.REGISTER_SQL);
+                    statement = connection.prepareStatement(PreparedStatements.USER_REGISTER_SQL);
                     statement.setString(1, newuser);
                     statement.setString(2, passhash);
                     statement.setString(3, usersalt);
@@ -134,6 +167,270 @@ public class DatabaseHandler {
                 System.out.println(ex);
             }
         }
+
+    public void addHotelsToDB(String hotelId, String hotelName, String address, String city, String state, double lat, double lng) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.INSERT_HOTEL_SQL);
+                statement.setString(1, hotelName);
+                statement.setString(2, hotelId);
+                statement.setString(3, address);
+                statement.setString(4, city);
+                statement.setString(5, state);
+                statement.setDouble(6, lat);
+                statement.setDouble(7, lng);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+    public void addReviewsToDB(String reviewId, String hotelId, String title, String text, String username, float rating, String postDate) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.INSERT_REVIEW_SQL);
+                statement.setString(1, reviewId);
+                statement.setString(2, hotelId);
+                statement.setString(3, title);
+                statement.setString(4, text);
+                statement.setString(5, username);
+                statement.setFloat(6, rating);
+                statement.setString(7, postDate);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public Hotel getHotelFromDB(String hotelId) {
+        PreparedStatement statement;
+        Hotel h = null;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.FIND_HOTEL_SQL);
+                statement.setString(1, hotelId);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                    h = new Hotel(rs.getString("hotelName"), rs.getString("hotelId"), rs.getString("address"), rs.getString("city"), rs.getString("state"), rs.getDouble("lat"), rs.getDouble("lng"));
+                }
+                statement.close();
+                return h;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+
+    public ArrayList<Hotel> searchHotelsInDB(String word) {
+        PreparedStatement statement;
+        ResultSet rs;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                if(word == null || word.isEmpty()) {
+                    statement = connection.prepareStatement(PreparedStatements.GET_ALL_HOTEL_SQL);
+                    rs = statement.executeQuery();
+                } else {
+                    statement = connection.prepareStatement(PreparedStatements.GET_GIVEN_HOTEL_SQL);
+                    statement.setString(1, "%" + word + "%");
+                    rs = statement.executeQuery();
+                }
+                ArrayList<Hotel> arr = new ArrayList<>();
+                while(rs.next()) {
+                    Hotel h = new Hotel(rs.getString("hotelName"), rs.getString("hotelId"), rs.getString("address"), rs.getString("city"), rs.getString("state"), rs.getDouble("lat"), rs.getDouble("lng"));
+                    arr.add(h);
+                }
+                statement.close();
+                return arr;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+
+    public ArrayList<HotelReview> getReviewsFromDB(String hotelId) {
+        PreparedStatement statement;
+        ArrayList<HotelReview> arr = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.FIND_REVIEW_SQL);
+                statement.setString(1, hotelId);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                    HotelReview hr = new HotelReview(rs.getString("hotelId"), rs.getString("reviewId"), rs.getFloat("reviewRating"), rs.getString("title"), rs.getString("reviewText"), rs.getString("username"), rs.getString("postDate"));
+                    arr.add(hr);
+                }
+                statement.close();
+                Collections.sort(arr);
+                return arr;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+
+    public HotelReview getReviewObjFromDB(String reviewId) {
+        PreparedStatement statement;
+        HotelReview h = null;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.FIND_REVIEWID_SQL);
+                statement.setString(1, reviewId);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                    h = new HotelReview(rs.getString("hotelId"), rs.getString("reviewId"), rs.getFloat("reviewRating"), rs.getString("title"), rs.getString("reviewText"), rs.getString("username"), rs.getString("postDate"));
+                }
+                statement.close();
+                return h;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+
+    public void editReviewsInDB(String reviewId, String hotelId, String title, String text, String username, float rating, String postDate) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.UPDATE_REVIEW_SQL);
+                statement.setFloat(1, rating);
+                statement.setString(2, title);
+                statement.setString(3, text);
+                statement.setString(4, postDate);
+                statement.setString(5, reviewId);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void deleteReviewFromDB(String reviewId) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.DELETE_REVIEW_SQL);
+                statement.setString(1, reviewId);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void addLikesInDB(String reviewId, String hotelId, String username) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.INSERT_LIKES_SQL);
+                statement.setString(1, reviewId);
+                statement.setString(2, hotelId);
+                statement.setString(3, username);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void findLikesInDB(String hotelId,) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.FIND_LIKES_SQL);
+                statement.setString(1, hotelId);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+
+                }
+                statement.close();
+                return h;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void removeLikesInDB(String reviewId, String username) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.DELETE_LIKES_SQL);
+                statement.setString(1, reviewId);
+                statement.setString(2, username);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
 
         public String validation(String username, String password) {
             if(userExists(username)) {
@@ -173,7 +470,7 @@ public class DatabaseHandler {
     public boolean userExists(String username) {
         boolean exists = false;
         try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
-            PreparedStatement ps = dbConnection.prepareStatement(jdbc.PreparedStatements.USER_SQL);
+            PreparedStatement ps = dbConnection.prepareStatement(PreparedStatements.FIND_USER_SQL);
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
             exists = rs.next();
@@ -188,7 +485,7 @@ public class DatabaseHandler {
         PreparedStatement statement;
         try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
             //System.out.println("dbConnection successful");
-            statement = connection.prepareStatement(jdbc.PreparedStatements.AUTH_SQL);
+            statement = connection.prepareStatement(PreparedStatements.AUTH_SQL);
             String usersalt = getSalt(connection, username);
             String passhash = getHash(password, usersalt);
 
@@ -206,7 +503,7 @@ public class DatabaseHandler {
 
     private String getSalt(Connection connection, String user) {
         String salt = null;
-        try (PreparedStatement statement = connection.prepareStatement(jdbc.PreparedStatements.SALT_SQL)) {
+        try (PreparedStatement statement = connection.prepareStatement(PreparedStatements.SALT_SQL)) {
             statement.setString(1, user);
             ResultSet results = statement.executeQuery();
             if (results.next()) {
@@ -221,10 +518,5 @@ public class DatabaseHandler {
     }
 
         public static void main(String[] args) {
-//            DatabaseHandler dhandler = DatabaseHandler.getInstance();
-//            dhandler.createTable();
-//            System.out.println("created a user table ");
-//            dhandler.registerUser("luke", "lukeS1k23w");
-//            System.out.println("Registered luke.");
         }
 }

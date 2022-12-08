@@ -72,9 +72,9 @@ public class WeatherData {
     public JsonObject printWeather(ThreadSafeHotelData hotelData, String hotelID) {
         JsonObject json = new JsonObject();
         json = hotelData.printHotel(hotelID);
-        if(hotelID != null) {
-            json.add("weather", callWeatherAPI(hotelData.getLatString(hotelID), hotelData.getLngString(hotelID)));
-        }
+//        if(hotelID != null) {
+//            json.add("weather", callWeatherAPI(hotelData.getLatString(hotelID), hotelData.getLngString(hotelID)));
+//        }
         return json;
     }
 

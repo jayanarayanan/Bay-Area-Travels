@@ -1,5 +1,6 @@
 package jettyServer;
 
+import database.DatabaseHandler;
 import hotelapp.ThreadSafeHotelData;
 import hotelapp.ThreadSafeHotelReviewData;
 import org.apache.commons.text.StringEscapeUtils;
@@ -27,6 +28,7 @@ public class DeleteReviewServlet  extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
 
         String hotelId = request.getParameter("hotelId");
         hotelId = StringEscapeUtils.escapeHtml4(hotelId);
@@ -35,7 +37,7 @@ public class DeleteReviewServlet  extends HttpServlet {
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/ModifyReview.html");
-        reviewData.deleteReview(hotelId, reviewId);
+        dbHandler.deleteReviewFromDB(reviewId);
         response.sendRedirect("/reviews?hotelId=" + hotelId);
     }
 }

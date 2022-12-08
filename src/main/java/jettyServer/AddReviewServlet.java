@@ -1,5 +1,6 @@
 package jettyServer;
 
+import database.DatabaseHandler;
 import hotelapp.HotelReview;
 import hotelapp.ThreadSafeHotelData;
 import hotelapp.ThreadSafeHotelReviewData;
@@ -26,13 +27,13 @@ public class AddReviewServlet extends HttpServlet {
         helper.notLoggedIn(request, response);
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
         String uuid = UUID.randomUUID().toString();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         Date date = new Date();
         String curTime = dateFormat.format(date);
 
-        HotelReview review = new HotelReview(Integer.parseInt(request.getParameter("review-hotelId")), uuid, 0,  request.getParameter("review-title"), request.getParameter("review-text"), helper.getUser(request), curTime);
-        reviewData.addReviewToMap(request.getParameter("review-hotelId"), review);
+        dbHandler.addReviewsToDB(uuid, request.getParameter("review-hotelId"), request.getParameter("review-title"), request.getParameter("review-text"), helper.getUser(request), Float.parseFloat(request.getParameter("rating")), curTime);
 
         response.sendRedirect("/reviews?hotelId=" + request.getParameter("review-hotelId"));
     }

@@ -1,5 +1,6 @@
 package jettyServer;
 
+import database.DatabaseHandler;
 import hotelapp.HotelReview;
 import hotelapp.ThreadSafeHotelData;
 import hotelapp.ThreadSafeHotelReviewData;
@@ -33,6 +34,7 @@ public class ModifyReviewServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
 
         String hotelId = request.getParameter("hotelId");
         hotelId = StringEscapeUtils.escapeHtml4(hotelId);
@@ -41,8 +43,8 @@ public class ModifyReviewServlet extends HttpServlet {
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/ModifyReview.html");
-        context.put("review", reviewData.getReviewObj(hotelId, reviewId));
-        context.put("hotel", hotelData.getHotelObject(hotelId));
+        context.put("review", dbHandler.getReviewObjFromDB(reviewId));
+        context.put("hotel", dbHandler.getHotelFromDB(hotelId));
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{
@@ -55,7 +57,12 @@ public class ModifyReviewServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
-        reviewData.modifyReview(request.getParameter("review-hotelId"), request.getParameter("review-reviewId"), request.getParameter("review-title"), request.getParameter("review-text"));
+        Helper helper = new Helper();
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Date date = new Date();
+        String curTime = dateFormat.format(date);
+        dbHandler.editReviewsInDB(request.getParameter("review-reviewId"), request.getParameter("review-hotelId"), request.getParameter("review-title"), request.getParameter("review-text"), helper.getUser(request), Float.parseFloat(request.getParameter("rating")), curTime);
 
         response.sendRedirect("/reviews?hotelId=" + request.getParameter("review-hotelId"));
     }
