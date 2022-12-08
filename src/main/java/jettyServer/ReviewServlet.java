@@ -1,6 +1,7 @@
 package jettyServer;
 
 import database.DatabaseHandler;
+import hotelapp.Likes;
 import hotelapp.ThreadSafeHotelData;
 import hotelapp.ThreadSafeHotelReviewData;
 import org.apache.commons.text.StringEscapeUtils;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 
 public class ReviewServlet extends HttpServlet {
     private ThreadSafeHotelReviewData reviewData;
@@ -36,6 +38,8 @@ public class ReviewServlet extends HttpServlet {
         // Get the word from the get request
         String hotelId = request.getParameter("hotelId");
         hotelId = StringEscapeUtils.escapeHtml4(hotelId);
+        ArrayList<Likes> likes = dbHandler.findLikesInDB(hotelId);
+        Likes l = new Likes();
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/HotelDetails.html");
@@ -44,6 +48,7 @@ public class ReviewServlet extends HttpServlet {
         context.put("Reviews", dbHandler.getReviewsFromDB(hotelId));
         context.put("avgRating", reviewData.avgRating(hotelId));
         context.put("user", helper.getUser(request));
+        context.put("likes", l.getLikeMap(likes));
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{

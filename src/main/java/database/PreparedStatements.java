@@ -79,7 +79,7 @@ public class PreparedStatements {
             "DELETE FROM reviews WHERE reviewId = ?";
 
     public static final String DELETE_LIKES_SQL =
-            "DELETE FROM likes WHERE reviewId = ? AND username = ?";
+            "DELETE FROM likes WHERE reviewId = ? AND likedUser = ?";
 
     public static final String UPDATE_REVIEW_SQL =
             "UPDATE reviews SET reviewRating = ?, title = ?, reviewText = ?, postDate = ? WHERE reviewId = ?";

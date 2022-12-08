@@ -57,6 +57,24 @@
                     <button>Delete</button>
                 </a>
                 #end
+                #set($liked = false)
+                #set($count1 = 0)
+                #foreach( $likedUser in $likes.get($review.getReviewID()))
+                    #set($count1 = $count1 + 1)
+                    #if ($likedUser == $user)
+                        <a href="/unlikeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                            <button>Unlike</button>
+                        </a>
+                        #set($liked = true)
+                        #break;
+                    #end
+                #end
+                #if($liked == false)
+                    <a href="/likeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                        <button>Like</button>
+                    </a>
+                #end
+                <p>$count1 people found this helpful!</p>
             #end
         </div>
     </div>

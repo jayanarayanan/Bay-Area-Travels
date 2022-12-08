@@ -3,6 +3,7 @@ package database;
 import database.PreparedStatements;
 import hotelapp.Hotel;
 import hotelapp.HotelReview;
+import hotelapp.Likes;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -62,7 +63,7 @@ public class DatabaseHandler {
 //                statement.executeUpdate(PreparedStatements.CREATE_USER_TABLE);
 //                statement.executeUpdate(PreparedStatements.CREATE_HOTEL_TABLE);
 //                statement.executeUpdate(PreparedStatements.CREATE_REVIEW_TABLE);
-                statement.executeUpdate(PreparedStatements.CREATE_LIKES_TABLE);
+//                statement.executeUpdate(PreparedStatements.CREATE_LIKES_TABLE);
             }
             catch (SQLException ex) {
                 System.out.println(ex);
@@ -389,8 +390,9 @@ public class DatabaseHandler {
         }
     }
 
-    public void findLikesInDB(String hotelId,) {
+    public ArrayList<Likes> findLikesInDB(String hotelId) {
         PreparedStatement statement;
+        ArrayList<Likes> likes = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
             System.out.println("dbConnection successful");
             try {
@@ -398,10 +400,11 @@ public class DatabaseHandler {
                 statement.setString(1, hotelId);
                 ResultSet rs = statement.executeQuery();
                 while(rs.next()) {
-
+                    Likes l = new Likes(rs.getString("reviewId"), rs.getString("likedUser"));
+                    likes.add(l);
                 }
                 statement.close();
-                return h;
+                return likes;
             }
             catch(SQLException e) {
                 System.out.println(e);
@@ -410,6 +413,7 @@ public class DatabaseHandler {
         catch (SQLException ex) {
             System.out.println(ex);
         }
+        return null;
     }
 
     public void removeLikesInDB(String reviewId, String username) {

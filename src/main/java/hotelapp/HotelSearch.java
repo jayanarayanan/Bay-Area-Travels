@@ -70,6 +70,8 @@ public class HotelSearch {
         server.addHandlers("/login", new LoginServlet());
         server.addHandlers("/register", new RegisterServlet());
         server.addHandlers("/logout", new LogoutServlet());
+        server.addHandlers("/likeReview", new LikeReviewServlet());
+        server.addHandlers("/unlikeReview", new UnlikeReviewServlet());
         server.start();
 
 
