@@ -13,6 +13,9 @@
     <a href="/logout">
         <button>Logout</button>
     </a>
+    <a href="/viewLinks">
+        <button>View Links Visited</button>
+    </a>
 </div>
 <div class="container">
     <div class="row">
@@ -21,7 +24,7 @@
             <p>ID: $Hotels.getHotelID()</p>
             <p>Address: $Hotels.getHotelAddress()</p>
             <p>Average Rating: $avgRating</p>
-            <p>Expedia Link: <a href="$Elink" target="_blank" rel="noopener noreferrer"> $Elink </a></p>
+            <p>Expedia Link: <a href="$Elink" onclick="sendLinkToDB()" target="_blank" rel="noopener noreferrer"> $Elink </a></p>
             <form action="/addReview" method="POST">
                 <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID" value="$Hotels.getHotelID()" readonly> <br>
                 <div class="input-group mb-3">
@@ -79,5 +82,14 @@
         </div>
     </div>
 </div>
+<script>
+    //write a javascript function without using jquery to send the link to the database
+    function sendLinkToDB() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("GET", "/sendLinkToDB?hotelId=${Hotels.getHotelID()}&link=${Elink}", true);
+        xhttp.send();
+    }
+
+</script>
 </body>
 </html>

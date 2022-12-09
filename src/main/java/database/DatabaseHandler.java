@@ -64,6 +64,7 @@ public class DatabaseHandler {
 //                statement.executeUpdate(PreparedStatements.CREATE_HOTEL_TABLE);
 //                statement.executeUpdate(PreparedStatements.CREATE_REVIEW_TABLE);
 //                statement.executeUpdate(PreparedStatements.CREATE_LIKES_TABLE);
+//                statement.executeUpdate(PreparedStatements.CREATE_LINKS_TABLE);
             }
             catch (SQLException ex) {
                 System.out.println(ex);
@@ -424,6 +425,70 @@ public class DatabaseHandler {
                 statement = connection.prepareStatement(PreparedStatements.DELETE_LIKES_SQL);
                 statement.setString(1, reviewId);
                 statement.setString(2, username);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void addLinkInDB(String username, String link) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.INSERT_LINKS_SQL);
+                statement.setString(1, username);
+                statement.setString(2, link);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public ArrayList<String> findLinksInDB(String username) {
+        PreparedStatement statement;
+        ArrayList<String> links = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.GET_ALL_LINKS_SQL);
+                statement.setString(1, username);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                    links.add(rs.getString("expediaLink"));
+                }
+                statement.close();
+                return links;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+
+    public void removeLinksInDB(String username) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.DELETE_LINKS_SQL);
+                statement.setString(1, username);
                 statement.executeUpdate();
                 statement.close();
             }

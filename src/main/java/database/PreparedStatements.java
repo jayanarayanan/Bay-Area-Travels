@@ -36,6 +36,11 @@ public class PreparedStatements {
                     "hotelId VARCHAR(20) NOT NULL, " +
                     "likedUser VARCHAR(40) NOT NULL);";
 
+    public static final String CREATE_LINKS_TABLE =
+            "CREATE TABLE linkClicks (" +
+                    "username VARCHAR(40) NOT NULL, " +
+                    "expediaLink VARCHAR(200) NOT NULL);";
+
     /** Used to insert a new user into the database. */
     public static final String USER_REGISTER_SQL =
             "INSERT INTO users (username, password, usersalt) " +
@@ -53,6 +58,10 @@ public class PreparedStatements {
             "INSERT INTO likes (reviewId, hotelId, likedUser) " +
                     "VALUES (?, ?, ?);";
 
+    public static final String INSERT_LINKS_SQL =
+            "INSERT INTO linkClicks (username, expediaLink) " +
+                    "VALUES (?, ?);";
+
     /** Used to check if a user with a given username exists. */
     public static final String FIND_USER_SQL =
             "SELECT username FROM users WHERE username = ?";
@@ -62,6 +71,9 @@ public class PreparedStatements {
 
     public static final String FIND_LIKES_SQL =
             "SELECT reviewId, likedUser FROM likes WHERE hotelId = ?";
+
+    public static final String GET_ALL_LINKS_SQL =
+            "SELECT * FROM linkClicks WHERE username = ?";
 
     public static final String GET_ALL_HOTEL_SQL =
             "SELECT * FROM hotels";
@@ -80,6 +92,9 @@ public class PreparedStatements {
 
     public static final String DELETE_LIKES_SQL =
             "DELETE FROM likes WHERE reviewId = ? AND likedUser = ?";
+
+    public static final String DELETE_LINKS_SQL =
+            "DELETE FROM linkClicks WHERE username = ?";
 
     public static final String UPDATE_REVIEW_SQL =
             "UPDATE reviews SET reviewRating = ?, title = ?, reviewText = ?, postDate = ? WHERE reviewId = ?";
