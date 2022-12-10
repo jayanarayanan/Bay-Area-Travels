@@ -8,11 +8,15 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body>
-<div class="jumbotron text-center">
-  <h1>Bay Area Travel </h1>
+<div class="jumbotron text-center" style="margin-top: -20px; background-image: linear-gradient(to bottom right, #32CD32, #00c0f0);">
+  <h1>Bay Area Travels </h1> <br>
+  <h3 style="margin-top: -7px;" >Where you book matters!</h3>
+  <br>
 </div>
 #if ( $error)
-<h4>$error</h4>
+<div class="alert alert-danger" role="alert">
+  $error
+</div>
 #end
 <form method="POST" action="/register">
   Enter your username:<br><input type="text" name="username"><br>

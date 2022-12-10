@@ -42,22 +42,23 @@
     <div class="row">
         <div class="col-sm-12">
             <div id="map" style = "height: 400px; width: 400px; float: right;"></div>
-            <h3> $Hotels.getHotelName() </h3>
-            <p>ID: $Hotels.getHotelID()</p>
-            <p>Address: $Hotels.getHotelAddress()</p>
-            <p>Average Rating: $avgRating</p>
+            <h1> $Hotels.getHotelName() </h1>
+            <h4><b>ID:</b> $Hotels.getHotelID()</h4>
+            <h4><b>Address:</b>  $Hotels.getHotelAddress()</h4>
+            <h4><b>Average Rating:</b>  $avgRating</h4>
             <h3>Weather details: </h3>
-            <p class = "temp"></p>
-            <p class="windspeed"></p>
-            <p class="winddirection"></p>
-            <p>Expedia Link: <a href="$Elink" onclick="sendLinkToDB()" target="_blank" rel="noopener noreferrer"> $Elink </a></p>
-            <form action="/addReview" method="POST">
-                <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID" value="$Hotels.getHotelID()" readonly> <br>
+            <h4 class = "temp"></h4>
+            <h4 class="windspeed"></h4>
+            <h4 class="winddirection"></h4>
+            <h4><b>Expedia Link:</b> <a href="$Elink" onclick="sendLinkToDB()" target="_blank" rel="noopener noreferrer"> $Elink </a></h4>
+            <form action="/addReview" method="POST" class="form-horizontal">
+                <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID" value="$Hotels.getHotelID()" hidden> <br><br>
                 <div class="input-group mb-3">
                     <div class="input-group-prepend">
-                        <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                        <div class="input-group-text" for="inputGroupSelect01" style="font-size: 25px;">Add a Review: </div>
                     </div>
-                    <select class="custom-select" id="inputGroupSelect01" name="rating">
+                    <label for="rating" class="col-sm-2 control-label">Rating:</label>
+                    <select class="form-control" id="rating" name="rating" style="width: 400px; margin: 10px 0;">
                         <option selected>Choose...</option>
                         <option value="0">0</option>
                         <option value="0.5">0.5</option>
@@ -72,12 +73,18 @@
                         <option value="5">5</option>
                     </select>
                 </div>
-                <input type="text" name="review-title" id="review-title" placeholder="Review Title"> <br>
-                <textarea name="review-text" id="review-text" placeholder="Review Text" rows="4" cols="50"></textarea><br>
-                <input type="submit" value="Submit"><br>
+                <label for="review-title" class="col-sm-2 control-label"style="width: 120px; margin: 10px 0;">Review Title:</label><br><br>
+                <input type="text" name="review-title" id="review-title" class="form-control" placeholder="Review Title" style="width: 400px; margin: 10px 0;">
+                <label for="review-text" class="col-sm-2 control-label" style="width: 120px; margin: 10px 0;">Review Text:</label><br><br>
+                <textarea class="form-control" name="review-text" id="review-text" placeholder="Review Text" rows="4" cols="50" style="width: 400px; margin: 10px 0;"></textarea>
+                <input class="form-control" type="submit" value="Submit" style="width: 120px; margin: 10px 0; background-color: #00c0f0;"><br>
             </form>
             #foreach( $review in $Reviews)
-                <p>$review</p>
+            <div class="well" style="max-width: 70%; margin: 10px 0; background-color: #87cefa; text-align: left;">
+                <p style="font-size: 18px;"><b>$review.getNickName()</b> gave a rating of <b>$review.getRating()</b></p>
+                <p style="font-size: 12px; text-align: right; margin-top: -30px;">$review.getReviewDate()</p>
+                <p style="font-size: 15px;"><b>$review.getReviewTitle()</b></p>
+                <p style="font-size: 15px;">$review.getReviewText()</p>
                 #if ($user == $review.getNickName())
                 <a href="/modifyReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
                     <button>Edit</button>
@@ -86,24 +93,22 @@
                     <button>Delete</button>
                 </a>
                 #end
+                </div>
+
                 #set($liked = false)
                 #set($count1 = 0)
                 #foreach( $likedUser in $likes.get($review.getReviewID()))
                     #set($count1 = $count1 + 1)
                     #if ($likedUser == $user)
                         <a href="/unlikeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-<!--                            <a href="javascript:unlikeReview()">-->
                             <button>Unlike</button></a>
-<!--                        </a>-->
                         #set($liked = true)
                         #break;
                     #end
                 #end
                 #if($liked == false)
                     <a href="/likeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-<!--                        <a href="javascript:likeReview()">-->
                             <button>Like</button></a>
-<!--                    </a>-->
                 #end
                 <p class = "likeCountText">$count1 people found this helpful!</p>
             #end
@@ -137,27 +142,11 @@
         var currentTemp = data.current_weather.temperature;
         var windSpeed = data.current_weather.windspeed;
         var windDirection = data.current_weather.winddirection;
-        document.querySelector(".temp").innerHTML = "Current Temperature: " + currentTemp + "&#176;C";
-        document.querySelector(".windspeed").innerHTML = "Current Wind Speed: " + windSpeed + "m/s";
-        document.querySelector(".winddirection").innerHTML = "Current Wind Direction: " + windDirection + "&#176;";
+        document.querySelector(".temp").innerHTML = "<b>Current Temperature:</b> " + currentTemp + "&#176;C";
+        document.querySelector(".windspeed").innerHTML = "<b>Current Wind Speed:</b> " + windSpeed + "m/s";
+        document.querySelector(".winddirection").innerHTML = "<b>Current Wind Direction:</b> " + windDirection + "&#176;";
     });
     }
-
-<!--    function unlikeReview() {-->
-<!--    fetch("/unlikeReview?reviewId=${review.getReviewID()}&hotelId=${Hotels.getHotelID()}")-->
-<!--    .then(() => {-->
-<!--        $count1 = $count1 - 1;-->
-<!--        document.querySelector(".likeCountText").innerHTML = "$count1 people found this helpful!";-->
-<!--        );-->
-<!--        }-->
-
-<!--        function likeReview() {-->
-<!--    fetch("/unlikeReview?reviewId=${review.getReviewID()}&hotelId=${Hotels.getHotelID()}")-->
-<!--    .then(() => {-->
-<!--        $count1 = $count1 + 1;-->
-<!--        document.querySelector(".likeCountText").innerHTML = "$count1 people found this helpful!";-->
-<!--        );-->
-<!--        }-->
 
 
 

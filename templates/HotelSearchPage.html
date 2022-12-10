@@ -40,10 +40,13 @@
       <h3> Hotels in Bay Area: </h3>
       #foreach( $hotel in $Hotels)
       <div class="well" style="max-width: 50%; margin: 10px auto; background-color: #87cefa; text-align: left;">
-      <a href="/reviews?hotelId=${hotel.getHotelID()}&offset=1" style="color: black; ">$hotel.getHotelName()</a> <br></div>
-      <div>$hotel.getHotelName()</div>
+      <a href="/reviews?hotelId=${hotel.getHotelID()}&offset=1" style="color: black; ">$hotel.getHotelName()</a> <br>
+      <div></div>
+      </div>
+
+      #end
     </div>
-    #end
+
   </div>
 </div>
 </body>

@@ -281,23 +281,23 @@ public class DatabaseHandler {
         return null;
     }
 
-    public int getAvgRatingFromDB(String hotelId) {
+    public float getAvgRatingFromDB(String hotelId) {
         PreparedStatement statement;
+        float average = 0;
+        int count = 0;
         ArrayList<HotelReview> arr = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
             System.out.println("dbConnection successful");
             try {
-                statement = connection.prepareStatement(PreparedStatements.FIND_REVIEW_SQL);
+                statement = connection.prepareStatement(PreparedStatements.GET_AVG_RATING_SQL);
                 statement.setString(1, hotelId);
-                statement.setInt(2, num);
                 ResultSet rs = statement.executeQuery();
                 while(rs.next()) {
-                    HotelReview hr = new HotelReview(rs.getString("hotelId"), rs.getString("reviewId"), rs.getFloat("reviewRating"), rs.getString("title"), rs.getString("reviewText"), rs.getString("username"), rs.getString("postDate"));
-                    arr.add(hr);
+                    average += rs.getFloat("reviewRating");
+                    count++;
                 }
                 statement.close();
-                Collections.sort(arr);
-                return arr;
+               return average/count;
             }
             catch(SQLException e) {
                 System.out.println(e);
@@ -306,7 +306,7 @@ public class DatabaseHandler {
         catch (SQLException ex) {
             System.out.println(ex);
         }
-        return null;
+        return 0;
     }
 
     public int getTotalReviews(String hotelId) {

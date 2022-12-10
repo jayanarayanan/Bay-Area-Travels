@@ -53,9 +53,9 @@ public class ReviewServlet extends HttpServlet {
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/HotelDetails.html");
         context.put("Hotels", dbHandler.getHotelFromDB(hotelId));
-        context.put("Elink", hotelData.getExpediaLink(hotelId));
+        context.put("Elink", "https://www.expedia.com/h" + hotelId + ".Hotel-Information");
         context.put("Reviews", dbHandler.getReviewsFromDB(hotelId, offset));
-        context.put("avgRating", reviewData.avgRating(hotelId));
+        context.put("avgRating", dbHandler.getAvgRatingFromDB(hotelId));
         context.put("totalReviews", totalPage);
         context.put("user", helper.getUser(request));
         context.put("likes", l.getLikeMap(likes));
