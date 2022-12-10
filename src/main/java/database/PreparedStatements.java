@@ -96,6 +96,9 @@ public class PreparedStatements {
     public static final String FIND_REVIEW_SQL =
             "SELECT * FROM reviews WHERE hotelId = ? LIMIT 10 OFFSET ?";
 
+    public static final String GET_AVG_RATING_SQL =
+            "SELECT reviewRating FROM reviews WHERE hotelId = ?";
+
     public static final String FIND_REVIEW_COUNT_SQL =
             "SELECT COUNT(*) AS count FROM reviews WHERE hotelId = ?";
 

@@ -19,27 +19,31 @@
     </ul>
   </div>
 </nav>
-<div class="jumbotron text-center" style="margin-top: -20px; background-color: #00c0f0">
+<div class="jumbotron text-center" style="margin-top: -20px; background-image: linear-gradient(to bottom right, #32CD32, #00c0f0);">
   <h1>Bay Area Travels </h1> <br>
   <h3 style="margin-top: -7px;" >Where you book matters!</h3>
   <br>
-  <p>Last Login at : $lastLogin</p>
+  <p>Last login at : $lastLogin</p>
 </div>
-<div class="container">
+<div class="container" >
   <div class="row">
-    <div class="col-sm-8">
-      <div class = "searchbar" >
-        <form action="/hotelSearch" method="GET">
-          <p>Enter the hotel name you want to search: </p>
-          <input type="text" name="hotelName" id="Hotel-Search"><br>
-          <input type="submit" value="Submit">
-        </form>
+    <div class="col-sm-12" style="text-align: center;">
+      <h3>Enter the hotel name you want to search: </h3><br>
+      <form action="/hotelSearch" method="GET">
+      <div class="input-group input-group-lg">
+        <input type="text" name="hotelName" id="Hotel-Search" class="form-control" placeholder="What do you want to search today?" aria-label="What do you want to search today?" aria-describedby="basic-addon2">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit" style="background-color: #00c0f0">Submit!</button>
+        </span>
       </div>
+      </form><br><br>
       <h3> Hotels in Bay Area: </h3>
       #foreach( $hotel in $Hotels)
-      <a href="/reviews?hotelId=${hotel.getHotelID()}&offset=1">$hotel.getHotelName()</a> <br>
-      #end
+      <div class="well" style="max-width: 50%; margin: 10px auto; background-color: #87cefa; text-align: left;">
+      <a href="/reviews?hotelId=${hotel.getHotelID()}&offset=1" style="color: black; ">$hotel.getHotelName()</a> <br></div>
+      <div>$hotel.getHotelName()</div>
     </div>
+    #end
   </div>
 </div>
 </body>
