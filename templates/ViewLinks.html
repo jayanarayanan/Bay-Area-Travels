@@ -15,7 +15,7 @@
     </div>
     <ul class="nav navbar-nav navbar-right">
       <li><a href="/viewLinks">View Links Visited</a></li>
-      <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+      <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
     </ul>
   </div>
 </nav>
@@ -25,9 +25,13 @@
   <br>
   <p>Last login at : $lastLogin</p>
 </div>
+
+<p style="text-align: center; font-size: 30px;">History of visited Expedia Links:</p>
 #foreach( $link in $Links)
+<div class="well" style="max-width: 50%; margin: 10px auto; background-color: #87cefa; text-align: left;">
 <a href="${link}"> $link
 </a> <br />
+</div>
 #end
 </body>
 </html>

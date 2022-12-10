@@ -28,7 +28,7 @@
         </div>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="/viewLinks">View Links Visited</a></li>
-            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+            <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
         </ul>
     </div>
 </nav>
@@ -93,24 +93,23 @@
                     <button>Delete</button>
                 </a>
                 #end
-                </div>
-
                 #set($liked = false)
                 #set($count1 = 0)
                 #foreach( $likedUser in $likes.get($review.getReviewID()))
-                    #set($count1 = $count1 + 1)
-                    #if ($likedUser == $user)
-                        <a href="/unlikeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-                            <button>Unlike</button></a>
-                        #set($liked = true)
-                        #break;
-                    #end
+                #set($count1 = $count1 + 1)
+                #if ($likedUser == $user)
+                <a href="/unlikeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                    <button>Unlike</button></a>
+                #set($liked = true)
+                #break;
+                #end
                 #end
                 #if($liked == false)
-                    <a href="/likeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-                            <button>Like</button></a>
+                <a href="/likeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
+                    <button>Like</button></a>
                 #end
-                <p class = "likeCountText">$count1 people found this helpful!</p>
+                <p class = "likeCountText" style="text-align: righta;">$count1 people found this helpful!</p>
+                </div>
             #end
             #foreach( $i in [1..$totalReviews])
             <a href="/reviews?hotelId=${Hotels.getHotelID()}&offset=${i}">

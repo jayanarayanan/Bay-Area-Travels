@@ -19,11 +19,12 @@
 </div>
 
     #end
-    <form method="POST" action="/login">
-        Enter your username:<br><input type="text" name="username"><br>
-        Enter your password:<br><input type="password" name="password"><br>
+    <form method="POST" action="/login" style="text-align: center; width: 40%; border-radius: 10px; border: 2px solid black; margin: 20px auto; padding: 30px 20px; background-color: #87cefa">
+        <div style="font-size: 40px;"><b>LOGIN</b></div><br>
+        <p style="font-size: 20px;">Enter your username:</p><input class="form-control" type="text" name="username" style="width: 400px; margin: 10px auto;"><br>
+        <p style="font-size: 20px;">Enter your password:</p><input class="form-control" type="password" name="password" style="width: 400px; margin: 10px auto;"><br>
         <p><input type="submit" value="Login"></p>
+        Don't have an account? <a href="/register"><p>Register here!</p></a>
     </form>
-    Don't have an account? <a href="/register"><p>Register here!</p></a>
 </body>
 </html>
