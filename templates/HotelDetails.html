@@ -14,7 +14,7 @@
             crossorigin=""></script>
 
 </head>
-<body onload="displayMap()">
+<body onload="onloaded()">
 <div class="jumbotron text-center">
     <h1>Bay Area Travel </h1> <br>
     <a href="/logout">
@@ -28,8 +28,8 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
+            <div id="map" style = "height: 400px; width: 400px; float: right;"></div>
             <h3> $Hotels.getHotelName() </h3>
-            <div id="map" style = "height: 180px; width: 180px; float: right;"></div>
             <p>ID: $Hotels.getHotelID()</p>
             <p>Address: $Hotels.getHotelAddress()</p>
             <p>Average Rating: $avgRating</p>
@@ -103,13 +103,41 @@
         xhttp.open("GET", "/sendLinkToDB?hotelId=${Hotels.getHotelID()}&link=${Elink}", true);
         xhttp.send();
     }
-    function displayMap() {
+    function onloaded() {
     var map = L.map('map').setView([$Hotels.getHotelLat(), $Hotels.getHotelLng()], 13);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
     var marker = L.marker([$Hotels.getHotelLat(), $Hotels.getHotelLng()]).addTo(map);
+
+
+    fetch("https://api.open-meteo.com/v1/forecast?latitude=${Hotels.getHotelLat()}&longitude=${Hotels.getHotelLng()}&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,windspeed_10m_max&current_weather=true&timezone=America%2FLos_Angeles")
+    .then(response => response.json())
+    .then(data => {
+        var currentTemp = data.current_weather.temperature_2m;
+        var currentWind = data.current_weather.windspeed_10m;
+        var currentWeather = data.current_weather.weather;
+        var currentWeatherIcon = data.current_weather.weather_icon;
+        var currentWeatherIconUrl = "https://api.open-meteo.com/weather-icons/" + currentWeatherIcon + ".png";
+        var currentWeatherIconImg = document.createElement("img");
+        currentWeatherIconImg.src = currentWeatherIconUrl;
+        var currentWeatherDiv = document.createElement("div");
+        currentWeatherDiv.innerHTML = "Current Weather: " + currentWeather + " " + currentTemp + "F " + currentWind + "mph";
+        currentWeatherDiv.appendChild(currentWeatherIconImg);
+        document.body.appendChild(currentWeatherDiv);
+        var dailyWeather = data.daily;
+        for (var i = 0; i < dailyWeather.length; i++) {
+            var dailyWeatherDiv = document.createElement("div");
+            var dailyWeatherIcon = dailyWeather[i].weather_icon;
+            var dailyWeatherIconUrl = "https://api.open-meteo.com/weather-icons/" + dailyWeatherIcon + ".png";
+            var dailyWeatherIconImg = document.createElement("img");
+            dailyWeatherIconImg.src = dailyWeatherIconUrl;
+            dailyWeatherDiv.innerHTML = "Day " + (i + 1) + ": " + dailyWeather[i].weather + " " + dailyWeather[i].temperature_2m_max + "F " + dailyWeather[i].temperature_2m_min + "F " + dailyWeather[i].windspeed_10m_max + "mph";
+            dailyWeatherDiv.appendChild(dailyWeatherIconImg);
+            document.body.appendChild(dailyWeatherDiv);
+        }
+    });
     }
 
 
