@@ -45,6 +45,8 @@ public class ReviewServlet extends HttpServlet {
         } else {
             offset = (Integer.parseInt(request.getParameter("offset")) - 1) * 10 ;
         }
+        int totalReviews = dbHandler.getTotalReviews(hotelId);
+        int totalPage = (int) Math.ceil((double) totalReviews / 10);
         ArrayList<Likes> likes = dbHandler.findLikesInDB(hotelId);
         Likes l = new Likes();
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
@@ -54,7 +56,7 @@ public class ReviewServlet extends HttpServlet {
         context.put("Elink", hotelData.getExpediaLink(hotelId));
         context.put("Reviews", dbHandler.getReviewsFromDB(hotelId, offset));
         context.put("avgRating", reviewData.avgRating(hotelId));
-        context.put("totalReviews", dbHandler.getTotalReviews(hotelId));
+        context.put("totalReviews", totalPage);
         context.put("user", helper.getUser(request));
         context.put("likes", l.getLikeMap(likes));
         if(dbHandler.findLoginDateInDB(helper.getUser(request)) != "") {

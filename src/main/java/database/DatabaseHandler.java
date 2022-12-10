@@ -1,6 +1,7 @@
 package database;
 
 import database.PreparedStatements;
+import hotelapp.GeoInfo;
 import hotelapp.Hotel;
 import hotelapp.HotelReview;
 import hotelapp.Likes;
@@ -146,7 +147,7 @@ public class DatabaseHandler {
             }
         }
 
-    public void addHotelsToDB(String hotelId, String hotelName, String address, String city, String state, double lat, double lng) {
+    public void addHotelsToDB(String hotelId, String hotelName, String address, String city, String state, GeoInfo coordinates) {
         PreparedStatement statement;
         try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
             System.out.println("dbConnection successful");
@@ -157,8 +158,8 @@ public class DatabaseHandler {
                 statement.setString(3, address);
                 statement.setString(4, city);
                 statement.setString(5, state);
-                statement.setDouble(6, lat);
-                statement.setDouble(7, lng);
+                statement.setDouble(6, coordinates.getLat());
+                statement.setDouble(7, coordinates.getLng());
                 statement.executeUpdate();
                 statement.close();
             }
@@ -205,7 +206,7 @@ public class DatabaseHandler {
                 statement.setString(1, hotelId);
                 ResultSet rs = statement.executeQuery();
                 while(rs.next()) {
-                    h = new Hotel(rs.getString("hotelName"), rs.getString("hotelId"), rs.getString("address"), rs.getString("city"), rs.getString("state"), rs.getDouble("lat"), rs.getDouble("lng"));
+                    h = new Hotel(rs.getString("hotelName"), rs.getString("hotelId"), rs.getString("address"), rs.getString("city"), rs.getString("state"), new GeoInfo(rs.getDouble("lat"), rs.getDouble("lng")));
                 }
                 statement.close();
                 return h;
@@ -236,7 +237,7 @@ public class DatabaseHandler {
                 }
                 ArrayList<Hotel> arr = new ArrayList<>();
                 while(rs.next()) {
-                    Hotel h = new Hotel(rs.getString("hotelName"), rs.getString("hotelId"), rs.getString("address"), rs.getString("city"), rs.getString("state"), rs.getDouble("lat"), rs.getDouble("lng"));
+                    Hotel h = new Hotel(rs.getString("hotelName"), rs.getString("hotelId"), rs.getString("address"), rs.getString("city"), rs.getString("state"), new GeoInfo(rs.getDouble("lat"), rs.getDouble("lng")));
                     arr.add(h);
                 }
                 statement.close();

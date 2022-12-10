@@ -6,8 +6,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+          integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+          crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+            integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+            crossorigin=""></script>
+
 </head>
-<body>
+<body onload="displayMap()">
 <div class="jumbotron text-center">
     <h1>Bay Area Travel </h1> <br>
     <a href="/logout">
@@ -22,6 +29,7 @@
     <div class="row">
         <div class="col-sm-12">
             <h3> $Hotels.getHotelName() </h3>
+            <div id="map" style = "height: 180px; width: 180px; float: right;"></div>
             <p>ID: $Hotels.getHotelID()</p>
             <p>Address: $Hotels.getHotelAddress()</p>
             <p>Average Rating: $avgRating</p>
@@ -80,8 +88,7 @@
                 #end
                 <p>$count1 people found this helpful!</p>
             #end
-            #set($reviewCount = ($totalReviews / 10) + 1)
-            #foreach( $i in [1..$reviewCount])
+            #foreach( $i in [1..$totalReviews])
             <a href="/reviews?hotelId=${Hotels.getHotelID()}&offset=${i}">
                 <button>$i</button>
             </a>
@@ -96,28 +103,13 @@
         xhttp.open("GET", "/sendLinkToDB?hotelId=${Hotels.getHotelID()}&link=${Elink}", true);
         xhttp.send();
     }
-
-    //write a javascript function to split the reviews into pages
-    function splitReviews() {
-        var reviews = document.getElementsByClassName("review");
-        var page = 1;
-        var count = 0;
-        for (var i = 0; i < reviews.length; i++) {
-            if (count == 5) {
-                page++;
-                count = 0;
-            }
-            reviews[i].setAttribute("id", "page" + page);
-            count++;
-        }
-        for (var i = 1; i <= page; i++) {
-            var button = document.createElement("button");
-            button.setAttribute("id", "page" + i);
-            button.setAttribute("onclick", "showPage(" + i + ")");
-            button.innerHTML = i;
-            document.getElementById("pages").appendChild(button);
-        }
-        showPage(1);
+    function displayMap() {
+    var map = L.map('map').setView([$Hotels.getHotelLat(), $Hotels.getHotelLng()], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map);
+    var marker = L.marker([$Hotels.getHotelLat(), $Hotels.getHotelLng()]).addTo(map);
     }
 
 

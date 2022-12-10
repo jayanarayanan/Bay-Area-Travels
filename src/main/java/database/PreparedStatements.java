@@ -97,7 +97,7 @@ public class PreparedStatements {
             "SELECT * FROM reviews WHERE hotelId = ? LIMIT 10 OFFSET ?";
 
     public static final String FIND_REVIEW_COUNT_SQL =
-            "SELECT COUNT(reviewId) AS count FROM reviews WHERE hotelId = ?";
+            "SELECT COUNT(*) AS count FROM reviews WHERE hotelId = ?";
 
 
     public static final String FIND_REVIEWID_SQL =

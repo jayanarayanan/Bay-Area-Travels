@@ -29,7 +29,7 @@ public class HotelData {
         ArrayList<Hotel> hotels = HotelParser.readHotel(hotelPath);
         for (Hotel h : hotels) {
             hotelMap.put(h.getHotelID(), h);
-//            dbHandler.addHotelsToDB(h.getHotelID(), h.getHotelName(), h.getHotelAddress(), h.getHotelCity(), h.getHotelState(), h.getHotelLat(), h.getHotelLng());
+//            dbHandler.addHotelsToDB(h.getHotelID(), h.getHotelName(), h.getHotelAddress(), h.getHotelCity(), h.getHotelState(), h.getCoordinates());
         }
     }
 

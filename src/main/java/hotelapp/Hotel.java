@@ -8,10 +8,8 @@ public class Hotel {
     private String hotelName;
     @SerializedName(value = "id")
     private String hotelID;
-//    @SerializedName(value = "ll")
-//    private GeoInfo coordinates;
-    private double lat;
-    private  double lng;
+    @SerializedName(value = "ll")
+    private GeoInfo coordinates;
     @SerializedName(value = "ad")
     private String address;
     @SerializedName(value = "ci")
@@ -20,11 +18,10 @@ public class Hotel {
     private String state;
 
     //constructor for class Hotel
-    public Hotel(String hotelName, String hotelID, String address, String city, String state, double lat, double lng) {
+    public Hotel(String hotelName, String hotelID, String address, String city, String state, GeoInfo coordinates) {
         this.hotelName = hotelName;
         this.hotelID = hotelID;
-        this.lat = lat;
-        this.lng = lng;
+        this.coordinates = coordinates;
         this.address = address;
         this.city = city;
         this.state = state;
@@ -54,10 +51,14 @@ public class Hotel {
         return this.state;
     }
     public double getHotelLat() {
-        return lat;
+        return coordinates.getLat();
     }
     public double getHotelLng() {
-        return lng;
+        return coordinates.getLng();
+    }
+
+    public GeoInfo getCoordinates() {
+        return coordinates;
     }
 
     //displays the contents of a Hotel object

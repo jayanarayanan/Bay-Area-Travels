@@ -9,11 +9,11 @@ public class GeoInfo {
         this.lng = lng;
     }
 
-    public String getLat() {
-        return String.valueOf(lat);
+    public double getLat() {
+        return lat;
     }
-    public String getLng() {
-        return String.valueOf(lng);
+    public double getLng() {
+        return lng;
     }
 
     public String toString() {
