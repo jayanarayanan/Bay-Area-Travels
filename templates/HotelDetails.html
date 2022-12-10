@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Hotel Details</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
           integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
           crossorigin=""/>
@@ -13,16 +13,29 @@
             integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
             crossorigin=""></script>
 
+    <style>
+    #lastLogin {
+        text-align: center;
+    }
+    </style>
+
 </head>
 <body onload="onloaded()">
-<div class="jumbotron text-center">
-    <h1>Bay Area Travel </h1> <br>
-    <a href="/logout">
-        <button>Logout</button>
-    </a>
-    <a href="/viewLinks">
-        <button>View Links Visited</button>
-    </a><br>
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/hotelSearch" style="font-size: 20px;">BayAreaTravels</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="/viewLinks">View Links Visited</a></li>
+            <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="jumbotron text-center" style="margin-top: -20px; background-color: #00c0f0">
+    <h1>Bay Area Travels </h1> <br>
+    <h3 style="margin-top: -7px;" >Where you book matters!</h3>
+    <br>
     <p>Last Login at : $lastLogin</p>
 </div>
 <div class="container">
@@ -33,6 +46,10 @@
             <p>ID: $Hotels.getHotelID()</p>
             <p>Address: $Hotels.getHotelAddress()</p>
             <p>Average Rating: $avgRating</p>
+            <h3>Weather details: </h3>
+            <p class = "temp"></p>
+            <p class="windspeed"></p>
+            <p class="winddirection"></p>
             <p>Expedia Link: <a href="$Elink" onclick="sendLinkToDB()" target="_blank" rel="noopener noreferrer"> $Elink </a></p>
             <form action="/addReview" method="POST">
                 <input type="text" name="review-hotelId" id="review-hotelId" placeholder="Hotel ID" value="$Hotels.getHotelID()" readonly> <br>
@@ -75,18 +92,20 @@
                     #set($count1 = $count1 + 1)
                     #if ($likedUser == $user)
                         <a href="/unlikeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-                            <button>Unlike</button>
-                        </a>
+<!--                            <a href="javascript:unlikeReview()">-->
+                            <button>Unlike</button></a>
+<!--                        </a>-->
                         #set($liked = true)
                         #break;
                     #end
                 #end
                 #if($liked == false)
                     <a href="/likeReview?reviewId=$review.getReviewID()&hotelId=$Hotels.getHotelID()">
-                        <button>Like</button>
-                    </a>
+<!--                        <a href="javascript:likeReview()">-->
+                            <button>Like</button></a>
+<!--                    </a>-->
                 #end
-                <p>$count1 people found this helpful!</p>
+                <p class = "likeCountText">$count1 people found this helpful!</p>
             #end
             #foreach( $i in [1..$totalReviews])
             <a href="/reviews?hotelId=${Hotels.getHotelID()}&offset=${i}">
@@ -97,7 +116,7 @@
     </div>
 </div>
 <script>
-    //write a javascript function without using jquery to send the link to the database
+
     function sendLinkToDB() {
         var xhttp = new XMLHttpRequest();
         xhttp.open("GET", "/sendLinkToDB?hotelId=${Hotels.getHotelID()}&link=${Elink}", true);
@@ -115,30 +134,31 @@
     fetch("https://api.open-meteo.com/v1/forecast?latitude=${Hotels.getHotelLat()}&longitude=${Hotels.getHotelLng()}&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,windspeed_10m_max&current_weather=true&timezone=America%2FLos_Angeles")
     .then(response => response.json())
     .then(data => {
-        var currentTemp = data.current_weather.temperature_2m;
-        var currentWind = data.current_weather.windspeed_10m;
-        var currentWeather = data.current_weather.weather;
-        var currentWeatherIcon = data.current_weather.weather_icon;
-        var currentWeatherIconUrl = "https://api.open-meteo.com/weather-icons/" + currentWeatherIcon + ".png";
-        var currentWeatherIconImg = document.createElement("img");
-        currentWeatherIconImg.src = currentWeatherIconUrl;
-        var currentWeatherDiv = document.createElement("div");
-        currentWeatherDiv.innerHTML = "Current Weather: " + currentWeather + " " + currentTemp + "F " + currentWind + "mph";
-        currentWeatherDiv.appendChild(currentWeatherIconImg);
-        document.body.appendChild(currentWeatherDiv);
-        var dailyWeather = data.daily;
-        for (var i = 0; i < dailyWeather.length; i++) {
-            var dailyWeatherDiv = document.createElement("div");
-            var dailyWeatherIcon = dailyWeather[i].weather_icon;
-            var dailyWeatherIconUrl = "https://api.open-meteo.com/weather-icons/" + dailyWeatherIcon + ".png";
-            var dailyWeatherIconImg = document.createElement("img");
-            dailyWeatherIconImg.src = dailyWeatherIconUrl;
-            dailyWeatherDiv.innerHTML = "Day " + (i + 1) + ": " + dailyWeather[i].weather + " " + dailyWeather[i].temperature_2m_max + "F " + dailyWeather[i].temperature_2m_min + "F " + dailyWeather[i].windspeed_10m_max + "mph";
-            dailyWeatherDiv.appendChild(dailyWeatherIconImg);
-            document.body.appendChild(dailyWeatherDiv);
-        }
+        var currentTemp = data.current_weather.temperature;
+        var windSpeed = data.current_weather.windspeed;
+        var windDirection = data.current_weather.winddirection;
+        document.querySelector(".temp").innerHTML = "Current Temperature: " + currentTemp + "&#176;C";
+        document.querySelector(".windspeed").innerHTML = "Current Wind Speed: " + windSpeed + "m/s";
+        document.querySelector(".winddirection").innerHTML = "Current Wind Direction: " + windDirection + "&#176;";
     });
     }
+
+<!--    function unlikeReview() {-->
+<!--    fetch("/unlikeReview?reviewId=${review.getReviewID()}&hotelId=${Hotels.getHotelID()}")-->
+<!--    .then(() => {-->
+<!--        $count1 = $count1 - 1;-->
+<!--        document.querySelector(".likeCountText").innerHTML = "$count1 people found this helpful!";-->
+<!--        );-->
+<!--        }-->
+
+<!--        function likeReview() {-->
+<!--    fetch("/unlikeReview?reviewId=${review.getReviewID()}&hotelId=${Hotels.getHotelID()}")-->
+<!--    .then(() => {-->
+<!--        $count1 = $count1 + 1;-->
+<!--        document.querySelector(".likeCountText").innerHTML = "$count1 people found this helpful!";-->
+<!--        );-->
+<!--        }-->
+
 
 
 </script>
