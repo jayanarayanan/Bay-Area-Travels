@@ -30,6 +30,8 @@ public class Helper {
     public static void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession();
         session.removeAttribute("username");
+        session.removeAttribute("newUser");
+        session.removeAttribute("loginTime");
         session.invalidate();
         response.sendRedirect("/login");
     }

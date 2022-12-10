@@ -10,6 +10,7 @@ import org.apache.velocity.app.VelocityEngine;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -29,7 +30,9 @@ public class HotelSearchServlet extends HttpServlet {
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
+        HttpSession session = request.getSession();
         DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        String date = "";
 
         // Get the word from the get request
         String hotelName = request.getParameter("hotelName");
@@ -38,6 +41,13 @@ public class HotelSearchServlet extends HttpServlet {
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/HotelSearchPage.html");
         context.put("Hotels", dbHandler.searchHotelsInDB(hotelName));
+        if(dbHandler.findLoginDateInDB(helper.getUser(request)) != "") {
+            date = dbHandler.findLoginDateInDB(helper.getUser(request));
+        } else {
+            date = "Never";
+            session.setAttribute("newUser", "true");
+        }
+        context.put("lastLogin", date);
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{

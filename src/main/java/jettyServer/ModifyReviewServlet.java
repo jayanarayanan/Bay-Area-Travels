@@ -35,6 +35,7 @@ public class ModifyReviewServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
         DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        String date = "";
 
         String hotelId = request.getParameter("hotelId");
         hotelId = StringEscapeUtils.escapeHtml4(hotelId);
@@ -45,6 +46,12 @@ public class ModifyReviewServlet extends HttpServlet {
         Template template = ve.getTemplate("templates/ModifyReview.html");
         context.put("review", dbHandler.getReviewObjFromDB(reviewId));
         context.put("hotel", dbHandler.getHotelFromDB(hotelId));
+        if(dbHandler.findLoginDateInDB(helper.getUser(request)) != "") {
+            date = dbHandler.findLoginDateInDB(helper.getUser(request));
+        } else {
+            date = "Never";
+        }
+        context.put("lastLogin", date);
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{

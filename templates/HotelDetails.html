@@ -15,7 +15,8 @@
     </a>
     <a href="/viewLinks">
         <button>View Links Visited</button>
-    </a>
+    </a><br>
+    <p>Last Login at : $lastLogin</p>
 </div>
 <div class="container">
     <div class="row">
@@ -79,6 +80,12 @@
                 #end
                 <p>$count1 people found this helpful!</p>
             #end
+            #set($reviewCount = ($totalReviews / 10) + 1)
+            #foreach( $i in [1..$reviewCount])
+            <a href="/reviews?hotelId=${Hotels.getHotelID()}&offset=${i}">
+                <button>$i</button>
+            </a>
+            #end
         </div>
     </div>
 </div>
@@ -89,6 +96,30 @@
         xhttp.open("GET", "/sendLinkToDB?hotelId=${Hotels.getHotelID()}&link=${Elink}", true);
         xhttp.send();
     }
+
+    //write a javascript function to split the reviews into pages
+    function splitReviews() {
+        var reviews = document.getElementsByClassName("review");
+        var page = 1;
+        var count = 0;
+        for (var i = 0; i < reviews.length; i++) {
+            if (count == 5) {
+                page++;
+                count = 0;
+            }
+            reviews[i].setAttribute("id", "page" + page);
+            count++;
+        }
+        for (var i = 1; i <= page; i++) {
+            var button = document.createElement("button");
+            button.setAttribute("id", "page" + i);
+            button.setAttribute("onclick", "showPage(" + i + ")");
+            button.innerHTML = i;
+            document.getElementById("pages").appendChild(button);
+        }
+        showPage(1);
+    }
+
 
 </script>
 </body>

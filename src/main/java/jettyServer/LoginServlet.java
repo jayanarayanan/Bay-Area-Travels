@@ -13,6 +13,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LoginServlet extends HttpServlet {
 
@@ -47,11 +50,15 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         password = StringEscapeUtils.escapeHtml4(password);
         DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        Date date = new Date();
+        String curTime = dateFormat.format(date);
 
         if(dbHandler.authenticateUser(username, password)) {
             String user = (String) session.getAttribute("username");
             if(user == null) {
                 session.setAttribute("username", username);
+                session.setAttribute("loginTime", curTime);
             }
             response.sendRedirect("/hotelSearch");
         }

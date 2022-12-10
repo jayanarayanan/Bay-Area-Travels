@@ -15,7 +15,8 @@
   </a>
   <a href="/viewLinks">
     <button>View Links Visited</button>
-  </a>
+  </a> <br>
+  <p>Last Login at : $lastLogin</p>
 </div>
 <div class="container">
   <div class="row">
@@ -29,7 +30,7 @@
       </div>
       <h3> Hotels in Bay Area: </h3>
       #foreach( $hotel in $Hotels)
-      <a href="/reviews?hotelId=$hotel.getHotelID()">$hotel.getHotelName()</a> <br>
+      <a href="/reviews?hotelId=${hotel.getHotelID()}&offset=1">$hotel.getHotelName()</a> <br>
       #end
     </div>
   </div>

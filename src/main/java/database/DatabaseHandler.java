@@ -65,36 +65,12 @@ public class DatabaseHandler {
 //                statement.executeUpdate(PreparedStatements.CREATE_REVIEW_TABLE);
 //                statement.executeUpdate(PreparedStatements.CREATE_LIKES_TABLE);
 //                statement.executeUpdate(PreparedStatements.CREATE_LINKS_TABLE);
+//                statement.executeUpdate(PreparedStatements.CREATE_LAST_LOGIN_TABLE);
             }
             catch (SQLException ex) {
                 System.out.println(ex);
             }
         }
-
-//    public void createHotelTable() {
-//        Statement statement;
-//        try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
-//            System.out.println("dbConnection successful");
-//            statement = dbConnection.createStatement();
-//            statement.executeUpdate(PreparedStatements.CREATE_HOTEL_TABLE);
-//        }
-//        catch (SQLException ex) {
-//            System.out.println(ex);
-//        }
-//    }
-//
-//    public void createReviewTable() {
-//        Statement statement;
-//        try (Connection dbConnection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
-//            System.out.println("dbConnection successful");
-//            statement = dbConnection.createStatement();
-//            statement.executeUpdate(PreparedStatements.CREATE_REVIEW_TABLE);
-//        }
-//        catch (SQLException ex) {
-//            System.out.println(ex);
-//        }
-//    }
-
 
         /**
          * Returns the hex encoding of a byte array.
@@ -276,7 +252,7 @@ public class DatabaseHandler {
         return null;
     }
 
-    public ArrayList<HotelReview> getReviewsFromDB(String hotelId) {
+    public ArrayList<HotelReview> getReviewsFromDB(String hotelId, int num) {
         PreparedStatement statement;
         ArrayList<HotelReview> arr = new ArrayList<>();
         try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
@@ -284,6 +260,7 @@ public class DatabaseHandler {
             try {
                 statement = connection.prepareStatement(PreparedStatements.FIND_REVIEW_SQL);
                 statement.setString(1, hotelId);
+                statement.setInt(2, num);
                 ResultSet rs = statement.executeQuery();
                 while(rs.next()) {
                     HotelReview hr = new HotelReview(rs.getString("hotelId"), rs.getString("reviewId"), rs.getFloat("reviewRating"), rs.getString("title"), rs.getString("reviewText"), rs.getString("username"), rs.getString("postDate"));
@@ -301,6 +278,31 @@ public class DatabaseHandler {
             System.out.println(ex);
         }
         return null;
+    }
+
+    public int getTotalReviews(String hotelId) {
+        PreparedStatement statement;
+        int count = 0;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.FIND_REVIEW_COUNT_SQL);
+                statement.setString(1, hotelId);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                    count = rs.getInt("count");
+                }
+                statement.close();
+                return count;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return 0;
     }
 
     public HotelReview getReviewObjFromDB(String reviewId) {
@@ -489,6 +491,71 @@ public class DatabaseHandler {
             try {
                 statement = connection.prepareStatement(PreparedStatements.DELETE_LINKS_SQL);
                 statement.setString(1, username);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public void addLoginDateInDB(String username, String date) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.INSERT_DATE_SQL);
+                statement.setString(1, username);
+                statement.setString(2, date);
+                statement.executeUpdate();
+                statement.close();
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+    }
+
+    public String findLoginDateInDB(String username) {
+        PreparedStatement statement;
+        String date = "";
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.GET_LOGIN_DATE_SQL);
+                statement.setString(1, username);
+                ResultSet rs = statement.executeQuery();
+                while(rs.next()) {
+                   date = rs.getString("date");
+                }
+                statement.close();
+                return date;
+            }
+            catch(SQLException e) {
+                System.out.println(e);
+            }
+        }
+        catch (SQLException ex) {
+            System.out.println(ex);
+        }
+        return null;
+    }
+
+    public void modifyLoginDateInDB(String username, String date) {
+        PreparedStatement statement;
+        try (Connection connection = DriverManager.getConnection(uri, config.getProperty("username"), config.getProperty("password"))) {
+            System.out.println("dbConnection successful");
+            try {
+                statement = connection.prepareStatement(PreparedStatements.UPDATE_LAST_LOGIN_SQL);
+                statement.setString(1, date);
+                statement.setString(2, username);
                 statement.executeUpdate();
                 statement.close();
             }

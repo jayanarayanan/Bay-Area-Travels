@@ -41,6 +41,11 @@ public class PreparedStatements {
                     "username VARCHAR(40) NOT NULL, " +
                     "expediaLink VARCHAR(200) NOT NULL);";
 
+    public static final String CREATE_LAST_LOGIN_TABLE =
+            "CREATE TABLE lastLogin (" +
+                    "username VARCHAR(40) NOT NULL, " +
+                    "date VARCHAR(80) NOT NULL);";
+
     /** Used to insert a new user into the database. */
     public static final String USER_REGISTER_SQL =
             "INSERT INTO users (username, password, usersalt) " +
@@ -62,6 +67,10 @@ public class PreparedStatements {
             "INSERT INTO linkClicks (username, expediaLink) " +
                     "VALUES (?, ?);";
 
+    public static final String INSERT_DATE_SQL =
+            "INSERT INTO lastLogin (username, date) " +
+                    "VALUES (?, ?);";
+
     /** Used to check if a user with a given username exists. */
     public static final String FIND_USER_SQL =
             "SELECT username FROM users WHERE username = ?";
@@ -78,11 +87,18 @@ public class PreparedStatements {
     public static final String GET_ALL_HOTEL_SQL =
             "SELECT * FROM hotels";
 
+    public static final String GET_LOGIN_DATE_SQL =
+            "SELECT date FROM lastLogin WHERE username = ?";
+
     public static final String GET_GIVEN_HOTEL_SQL =
             "SELECT * FROM hotels WHERE hotelName LIKE ?";
 
     public static final String FIND_REVIEW_SQL =
-            "SELECT * FROM reviews WHERE hotelId = ?";
+            "SELECT * FROM reviews WHERE hotelId = ? LIMIT 10 OFFSET ?";
+
+    public static final String FIND_REVIEW_COUNT_SQL =
+            "SELECT COUNT(reviewId) AS count FROM reviews WHERE hotelId = ?";
+
 
     public static final String FIND_REVIEWID_SQL =
             "SELECT * FROM reviews WHERE hotelId = ?";
@@ -98,6 +114,9 @@ public class PreparedStatements {
 
     public static final String UPDATE_REVIEW_SQL =
             "UPDATE reviews SET reviewRating = ?, title = ?, reviewText = ?, postDate = ? WHERE reviewId = ?";
+
+    public static final String UPDATE_LAST_LOGIN_SQL =
+            "UPDATE lastLogin SET date = ? WHERE username = ?";
 
     /** Used to retrieve the salt associated with a specific user. */
     public static final String SALT_SQL =

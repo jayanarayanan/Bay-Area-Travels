@@ -34,10 +34,17 @@ public class ReviewServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
         DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        String date = "";
 
         // Get the word from the get request
         String hotelId = request.getParameter("hotelId");
         hotelId = StringEscapeUtils.escapeHtml4(hotelId);
+        int offset;
+        if(request.getParameter("offset") == null) {
+            offset = 0;
+        } else {
+            offset = (Integer.parseInt(request.getParameter("offset")) - 1) * 10 ;
+        }
         ArrayList<Likes> likes = dbHandler.findLikesInDB(hotelId);
         Likes l = new Likes();
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
@@ -45,10 +52,17 @@ public class ReviewServlet extends HttpServlet {
         Template template = ve.getTemplate("templates/HotelDetails.html");
         context.put("Hotels", dbHandler.getHotelFromDB(hotelId));
         context.put("Elink", hotelData.getExpediaLink(hotelId));
-        context.put("Reviews", dbHandler.getReviewsFromDB(hotelId));
+        context.put("Reviews", dbHandler.getReviewsFromDB(hotelId, offset));
         context.put("avgRating", reviewData.avgRating(hotelId));
+        context.put("totalReviews", dbHandler.getTotalReviews(hotelId));
         context.put("user", helper.getUser(request));
         context.put("likes", l.getLikeMap(likes));
+        if(dbHandler.findLoginDateInDB(helper.getUser(request)) != "") {
+            date = dbHandler.findLoginDateInDB(helper.getUser(request));
+        } else {
+            date = "Never";
+        }
+        context.put("lastLogin", date);
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{

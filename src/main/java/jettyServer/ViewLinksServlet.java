@@ -26,11 +26,18 @@ public class ViewLinksServlet extends HttpServlet {
         response.setStatus(HttpServletResponse.SC_OK);
         PrintWriter out = response.getWriter();
         DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        String date = "";
 
         VelocityEngine ve = (VelocityEngine) request.getServletContext().getAttribute("templateEngine");
         VelocityContext context = new VelocityContext();
         Template template = ve.getTemplate("templates/ViewLinks.html");
         context.put("Links", dbHandler.findLinksInDB(helper.getUser(request)));
+        if(dbHandler.findLoginDateInDB(helper.getUser(request)) != "") {
+            date = dbHandler.findLoginDateInDB(helper.getUser(request));
+        } else {
+            date = "Never";
+        }
+        context.put("lastLogin", date);
         StringWriter writer = new StringWriter();
         template.merge(context, writer);
         try{
