@@ -1,15 +1,13 @@
-# Final Project
-The goal of the final project is to implement a website with a subset of the functionality of tripadvisor (or oyster.com, hotels.com), where users can register, login, search for hotels, read reviews written by other people, write and edit their own reviews, etc. Note that this website will not allow the user to check availability or book hotels.
+For the final project, I have implemented a website with a subset of the functionality of TripAdvisor (or oyster.com, hotels.com), where users can register, login, search for hotels, read reviews written by other people, write and edit their own reviews, and more. However, the website does not allow users to check availability or book hotels.
 
-## General Requirements (for both parts of the project)
+In terms of requirements, I have implemented both the front end and back end using Java (plus some Javascript for the front end as needed). I have used Jetty/servlets for this project and used a locally installed MySQL database. To give my website a clean, professional look, I have used Bootstrap templates for all pages, including the registration and login pages. The look is consistent across all webpages, and I have used Bootstrap components such as Table, Modal, Jumbotron, Navbar.
 
-- You are required to implement both the front end and the back end. 
-- 	Your code should be in Java (plus some Javascript for the front end as needed).
-- You may reuse code from your labs; just keep in mind that you will most likely need to modify it for the project. You may also use code from the examples I showed in class, but you need to understand every line of code in your project and be explain to explain it (saying "I am not sure how it works, I just copied it from the example" will result in a 0 for the project).
-- You are required to use Jetty/servlets for this project. 
-- You may either use the departmental MySql database assigned to you (see MySqlAccounts.pdf under Schedule), or use a locally installed MySql database.
-- By default, you may not use any libraries except for the ones we used for labs. You are not allowed to use DataTables jQuery plugin or similar plugins. If you would like to use a particular library or tool, please make sure to get the instructor's approval first.  
-- For the final release of the project, your web pages should look professional and have a clean look. Using Twitter Bootstrap is highly recommended. For the first part of the project, it is acceptable to have a very simple front end.
-- During the interactive code review, it is the student's responsibility to demonstrate to the instructor that each feature works properly. You may not receive credit for the features you don't demonstrate at that time. Please practice showing a demo beforehand and come prepared. Make sure to show how your features handle error cases (e.g., login of a user that does not exist).  
+To store all data, including hotels and reviews, and the data required to implement features such as "favorite hotels", "history of expedia clicks" etc., I have used a MySQL database, and all operations use the database (accessed using JDBC).
 
-For the list of required features for milestone #1, please refer to the project description on the course webpage.
+For certain features, I have used Ajax to update only the part of the webpage without reloading the whole page. These features include showing the hotel on the map, allowing the user to save favorite hotels, and displaying the weather at the latitude and longitude of the given hotel.
+
+I have also implemented a feature to store a history of all expedia hotel links visited by the given user. This history is stored in the database, and users can view and clear the history. This page is available only to users who successfully logged in.
+
+To provide pagination, I have shown a fixed number of reviews on each page, and the user can navigate through multiple pages with reviews. I have implemented this feature on the frontend (using JavaScript).
+
+Lastly, I have implemented a feature to store and display the last date and time the user logged in to the website before this time (the feature is available only for logged-in users). The website displays the last login time in the UTC format.
