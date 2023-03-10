@@ -94,7 +94,7 @@ public class PreparedStatements {
             "SELECT * FROM hotels WHERE hotelName LIKE ?";
 
     public static final String FIND_REVIEW_SQL =
-            "SELECT * FROM reviews WHERE hotelId = ? LIMIT 10 OFFSET ?";
+            "SELECT * FROM reviews WHERE hotelId = ? LIMIT 5 OFFSET ?";
 
     public static final String GET_AVG_RATING_SQL =
             "SELECT reviewRating FROM reviews WHERE hotelId = ?";
